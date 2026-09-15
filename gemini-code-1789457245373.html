@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Scanner - pdfscaner.in</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 15px; }
+    header { text-align: center; margin-bottom: 15px; }
+    h1 { color: #333; margin-bottom: 10px; }
+    nav button {
+      background: #e0e0e0; border: none; padding: 8px 15px; margin: 2px;
+      border-radius: 5px; cursor: pointer; font-weight: bold; color: #333;
+    }
+    nav button.active { background: #007bff; color: white; }
+    
+    .section { display: none; max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .section.active { display: block; }
+    
+    #video, #preview { width: 100%; max-width: 500px; display: block; margin: 0 auto 15px; background: #000; }
+    .buttons { text-align: center; margin: 15px 0; }
+    button.action-btn {
+      padding: 12px 20px; margin: 5px; font-size: 16px; border: none;
+      border-radius: 8px; cursor: pointer; background: #007bff; color: white;
+    }
+    button.action-btn:disabled { background: #ccc; cursor: not-allowed; }
+    #createPdf { background: #28a745; }
+    #cropArea { max-width: 500px; margin: 0 auto; display: none; }
+    #status { text-align: center; margin-top: 10px; color: #555; }
+    
+    .page-info { text-align: center; margin: 10px 0; font-weight: bold; color: #444; }
+    
+    .static-page h2 { margin-bottom: 15px; color: #222; }
+    .static-page p, .static-page ul { line-height: 1.6; color: #555; margin-bottom: 15px; }
+    .static-page ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PDF Scanner</h1>
+    <nav>
+      <button onclick="showSection('scanner', this)" class="active">Scanner</button>
+      <button onclick="showSection('about', this)">About Us</button>
+      <button onclick="showSection('privacy', this)">Privacy Policy</button>
+      <button onclick="showSection('contact', this)">Contact Us</button>
+    </nav>
+  </header>
+
+  <!-- SCANNER SECTION -->
+  <div id="scanner" class="section active">
+    <video id="video" autoplay playsinline></video>
+    <div id="cropArea">
+      <img id="preview" alt="Captured page">
+    </div>
+
+    <div class="page-info" id="pageCountText">Pages captured: 0</div>
+
+    <div class="buttons">
+      <button class="action-btn" id="captureBtn">Capture Page</button>
+      <button class="action-btn" id="nextBtn" disabled>Next Page</button>
+      <button class="action-btn" id="createPdf" disabled>Create PDF</button>
+      <button class="action-btn" id="resetBtn" style="background:#dc3545;" disabled>Reset All</button>
+    </div>
+
+    <p id="status">Position document and click Capture</p>
+  </div>
+
+  <!-- ABOUT US SECTION -->
+  <div id="about" class="section static-page">
+    <h2>About Us</h2>
+    <p>Welcome to <strong>pdfscaner.in</strong>, your fast, secure, and browser-based document scanning utility managed by <strong>Jaydevbhai Hariyani</strong> from <strong>Surat, Gujarat</strong>.</p>
+    <p>We built this tool to help users quickly capture multi-page physical documents, crop unnecessary edges, and convert them clean into standard A4 PDF files directly from their mobile or desktop browser without installing heavy apps.</p>
+  </div>
+
+  <!-- PRIVACY POLICY SECTION -->
+  <div id="privacy" class="section static-page">
+    <h2>Privacy Policy</h2>
+    <p>Your privacy is 100% protected with pdfscaner.in:</p>
+    <ul>
+      <li><strong>Client-Side Processing:</strong> All image capture, cropping, and PDF compilation happen locally inside your browser memory.</li>
+      <li><strong>No Server Uploads:</strong> Your scanned documents/images are <em>never</em> uploaded or stored on any remote server.</li>
+      <li><strong>No Tracking:</strong> We do not collect or sell your personal document data.</li>
+    </ul>
+  </div>
+
+  <!-- CONTACT US SECTION -->
+  <div id="contact" class="section static-page">
+    <h2>Contact Us</h2>
+    <p>Have suggestions, bug reports, or feature requests? Reach out to us:</p>
+    <p>Name: <strong>Jaydevbhai Hariyani</strong></p>
+    <p>Email: <strong>jaydevhariyani@gmail.com</strong></p>
+    <p>Address: <strong>Surat, Gujarat, India</strong></p>
+    <p>Website: <strong>https://pdfscaner.in</strong></p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // Navigation tabs
+    function showSection(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+      
+      // Stop camera if navigating away from scanner to save battery/resources
+      if(id !== 'scanner' && stream) {
+        stream.getTracks().forEach(track => track.stop());
+      } else if(id === 'scanner') {
+        startCamera();
+      }
+    }
+
+    const video = document.getElementById('video');
+    const preview = document.getElementById('preview');
+    const cropArea = document.getElementById('cropArea');
+    const captureBtn = document.getElementById('captureBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const createPdfBtn = document.getElementById('createPdf');
+    const resetBtn = document.getElementById('resetBtn');
+    const status = document.getElementById('status');
+    const pageCountText = document.getElementById('pageCountText');
+
+    let stream = null;
+    let cropper = null;
+    let pages = [];
+
+    function updatePageCount() {
+      pageCountText.textContent = `Pages captured: ${pages.length}`;
+      resetBtn.disabled = pages.length === 0;
+    }
+
+    async function startCamera() {
+      try {
+        if(stream) return; // already running
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        cropArea.style.display = 'none';
+        captureBtn.disabled = false;
+        nextBtn.disabled = true;
+        status.textContent = 'Position document and click Capture';
+      } catch (err) {
+        status.textContent = 'Camera error or permission denied: ' + err.message;
+      }
+    }
+
+    startCamera();
+
+    captureBtn.onclick = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      preview.src = canvas.toDataURL('image/jpeg', 0.9);
+
+      video.style.display = 'none';
+      cropArea.style.display = 'block';
+      captureBtn.disabled = true;
+
+      if (cropper) cropper.destroy();
+      cropper = new Cropper(preview, {
+        aspectRatio: NaN,
+        viewMode: 1,
+        autoCropArea: 0.9,
+        background: false
+      });
+
+      nextBtn.disabled = false;
+      createPdfBtn.disabled = false;
+      status.textContent = 'Crop extra parts, then click Next Page or Create PDF';
+    };
+
+    nextBtn.onclick = () => {
+      saveCurrentPage();
+      startCamera();
+    };
+
+    createPdfBtn.onclick = () => {
+      saveCurrentPage();
+      if (pages.length === 0) return;
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      pages.forEach((imgData, i) => {
+        if (i > 0) pdf.addPage();
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const w = 190;
+        const h = 277;
+        pdf.addImage(imgData, 'JPEG', 10, 10, w, h);
+      });
+
+      pdf.save('scanned-document.pdf');
+      status.textContent = `PDF created with ${pages.length} page(s)!`;
+    };
+
+    resetBtn.onclick = () => {
+      pages = [];
+      updatePageCount();
+      status.textContent = 'Reset done. Position document and capture.';
+    };
+
+    function saveCurrentPage() {
+      if (cropper) {
+        const cropped = cropper.getCroppedCanvas({ maxWidth: 1600, fillColor: '#fff' });
+        pages.push(cropped.toDataURL('image/jpeg', 0.85));
+        cropper.destroy();
+        cropper = null;
+        updatePageCount();
+      }
+    }
+  </script>
+</body>
+</html>
