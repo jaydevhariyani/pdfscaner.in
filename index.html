@@ -32,7 +32,6 @@
     #createPdf { background: #28a745; }
     #resetBtn { background: #dc3545; }
     #cameraToggle { background: #6c757d; }
-    #autoEdgeToggle.active { background: #28a745; }
     #cropArea { max-width: 500px; margin: 0 auto; display: none; }
     #status { text-align: center; margin-top: 10px; color: #555; min-height: 20px; }
 
@@ -125,7 +124,7 @@
       <button class="action-btn" id="cameraToggle">🔄 Flip Camera</button>
     </div>
 
-    <p id="status">Document Rakho Ane Capture Page Par Click Karo</p>
+    <p id="status">Place your document and click Capture Page</p>
   </div>
 
   <!-- ABOUT US SECTION -->
@@ -190,8 +189,8 @@
 
     let stream = null;
     let cropper = null;
-    let pages = []; // { dataUrl, brightness, contrast, grayscale }
-    let currentFacing = 'environment'; // back camera by default
+    let pages = [];
+    let currentFacing = 'environment';
 
     function updatePageCount() {
       pageCountText.textContent = `Pages Captured: ${pages.length}`;
@@ -219,10 +218,10 @@
     }
 
     function removePage(idx) {
-      if (confirm(`Page ${idx + 1} remove karvu cho?`)) {
+      if (confirm(`Are you sure you want to remove Page ${idx + 1}?`)) {
         pages.splice(idx, 1);
         updatePageCount();
-        status.textContent = `Page ${idx + 1} remove thai gayu.`;
+        status.textContent = `Page ${idx + 1} has been removed.`;
       }
     }
 
@@ -240,9 +239,9 @@
           }
         });
         video.srcObject = stream;
-        status.textContent = 'Camera ready. Document rakho ane Capture Page par click karo.';
+        status.textContent = 'Camera ready. Place your document and click Capture Page.';
       } catch (err) {
-        status.textContent = 'Camera Permission Error: ' + err.message;
+        status.textContent = 'Camera permission error: ' + err.message;
       }
     }
 
@@ -253,7 +252,6 @@
 
     startCamera();
 
-    // Capture button - photo lao ane crop area open karo
     captureBtn.onclick = () => {
       if (!stream) { startCamera(); return; }
 
@@ -286,13 +284,11 @@
       });
 
       captureBtn.disabled = true;
-      // Create PDF always enabled once capture thai jay (ek page hoy to pan)
       createPdfBtn.disabled = false;
       nextBtn.disabled = false;
-      status.textContent = 'Extra part crop karo ane Next Page par click karo, ke direct Create PDF.';
+      status.textContent = 'Crop the extra part, then click Next Page or Create PDF.';
     };
 
-    // Next Page - pega page save karo ane camera reconnect
     nextBtn.onclick = () => {
       saveCurrentPage();
 
@@ -306,20 +302,19 @@
       captureBtn.disabled = false;
       nextBtn.disabled = true;
 
-      status.textContent = 'Navo page scan karo... Capture Page par click karo';
+      status.textContent = 'Scan the next page... Click Capture Page to continue.';
       startCamera();
     };
 
-    // Create PDF - direct (ek page hoy to pan)
     createPdfBtn.onclick = () => {
       if (cropper) saveCurrentPage();
 
       if (pages.length === 0) {
-        status.textContent = 'Pehla koi to page capture karo!';
+        status.textContent = 'Please capture at least one page first!';
         return;
       }
 
-      status.textContent = 'PDF banavai rahu che... please wait';
+      status.textContent = 'Generating PDF... please wait';
 
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -331,12 +326,11 @@
 
       const fileName = (filenameInput.value || 'Scanned-Document').trim() + '.pdf';
       pdf.save(fileName);
-      status.textContent = `✅ PDF bani gayu: ${fileName} (Total ${pages.length} pages)`;
+      status.textContent = `✅ PDF created: ${fileName} (Total ${pages.length} pages)`;
     };
 
-    // Reset
     resetBtn.onclick = () => {
-      if (confirm('Badha pages delete karva mango cho?')) {
+      if (confirm('Are you sure you want to delete all captured pages?')) {
         pages = [];
         if (cropper) { cropper.destroy(); cropper = null; }
         preview.src = '';
@@ -347,7 +341,7 @@
         createPdfBtn.disabled = true;
         resetBtn.disabled = true;
         updatePageCount();
-        status.textContent = 'Sab reset thai gayu. Navo scan karo.';
+        status.textContent = 'All pages cleared. Start a new scan.';
         startCamera();
       }
     };
@@ -368,7 +362,7 @@
 
     // ------------------------------------------------------------
     // AUTO EDGE DETECTION
-    // Capture thayelo image paper edges detect karine auto-crop apply kare che
+    // Detects paper edges and auto-crops on capture.
     // ------------------------------------------------------------
     function runAutoEdgeDetection() {
       try {
@@ -389,13 +383,11 @@
           const imageData = tmpCtx.getImageData(0, 0, w, h);
           const data = imageData.data;
 
-          // 1. Convert to grayscale
           for (let i = 0; i < data.length; i += 4) {
             const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
             data[i] = data[i + 1] = data[i + 2] = avg;
           }
 
-          // 2. Sobel edge detection
           const edges = new Uint8ClampedArray(w * h);
           const gray = new Uint8ClampedArray(w * h);
           for (let i = 0; i < data.length; i += 4) gray[i / 4] = data[i];
@@ -424,7 +416,6 @@
             }
           }
 
-          // 3. Find bounding box of edge pixels (paper)
           let minX = w, minY = h, maxX = 0, maxY = 0;
           let found = false;
           for (let i = 0; i < edges.length; i++) {
@@ -444,14 +435,12 @@
             return;
           }
 
-          // 4. Add small padding inside detected box
           const padding = 10;
           minX = Math.max(0, minX + padding);
           minY = Math.max(0, minY + padding);
           maxX = Math.min(w, maxX - padding);
           maxY = Math.min(h, maxY - padding);
 
-          // 5. Scale back to original image coordinates
           const scaleX = tmpImg.width / w;
           const scaleY = tmpImg.height / h;
 
