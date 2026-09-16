@@ -15,26 +15,74 @@
       border-radius: 5px; cursor: pointer; font-weight: bold; color: #333;
     }
     nav button.active { background: #007bff; color: white; }
-    
+
     .section { display: none; max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .section.active { display: block; }
-    
-    #video, #preview { width: 100%; max-width: 500px; display: block; margin: 0 auto 15px; background: #000; }
+
+    #video, #preview {
+      width: 100%; max-width: 500px; display: block; margin: 0 auto 15px;
+      background: #000; min-height: 200px;
+    }
     .buttons { text-align: center; margin: 15px 0; }
     button.action-btn {
-      padding: 12px 20px; margin: 5px; font-size: 16px; border: none;
+      padding: 10px 16px; margin: 5px; font-size: 15px; border: none;
       border-radius: 8px; cursor: pointer; background: #007bff; color: white;
     }
     button.action-btn:disabled { background: #ccc; cursor: not-allowed; }
     #createPdf { background: #28a745; }
+    #resetBtn { background: #dc3545; }
+    #cameraToggle { background: #6c757d; }
+    #autoEdgeToggle.active { background: #28a745; }
     #cropArea { max-width: 500px; margin: 0 auto; display: none; }
-    #status { text-align: center; margin-top: 10px; color: #555; }
-    
+    #status { text-align: center; margin-top: 10px; color: #555; min-height: 20px; }
+
     .page-info { text-align: center; margin: 10px 0; font-weight: bold; color: #444; }
-    
+
+    .settings-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin: 10px 0; align-items: center;
+    }
+    .settings-row label { font-size: 14px; color: #444; }
+    .settings-row input {
+      padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;
+      width: 180px;
+    }
+    .switch {
+      position: relative; display: inline-block; width: 46px; height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc; transition: .3s; border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px;
+      left: 3px; bottom: 3px; background-color: white; transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #28a745; }
+    input:checked + .slider:before { transform: translateX(22px); }
+
     .static-page h2 { margin-bottom: 15px; color: #222; }
     .static-page p, .static-page ul { line-height: 1.6; color: #555; margin-bottom: 15px; }
     .static-page ul { padding-left: 20px; }
+
+    .page-thumb-row {
+      display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+      max-width: 500px; margin: 10px auto;
+    }
+    .page-thumb {
+      width: 50px; height: 65px; border: 2px solid transparent;
+      border-radius: 4px; cursor: pointer; background: #fff;
+      object-fit: cover; position: relative;
+    }
+    .page-thumb.selected { border-color: #007bff; }
+    .page-thumb-overlay {
+      position: absolute; top: -6px; right: -6px;
+      background: #dc3545; color: white; border-radius: 50%;
+      width: 20px; height: 20px; display: flex; align-items: center;
+      justify-content: center; font-size: 12px; line-height: 1;
+    }
   </style>
 </head>
 <body>
@@ -56,12 +104,25 @@
     </div>
 
     <div class="page-info" id="pageCountText">Pages Captured: 0</div>
+    <div class="page-thumb-row" id="pageThumbs"></div>
+
+    <div class="settings-row">
+      <label for="filenameInput">PDF File Name:</label>
+      <input type="text" id="filenameInput" placeholder="My Scanned PDF" value="Scanned-Document">
+      <label for="autoEdgeToggle">Auto Edge:</label>
+      <label class="switch">
+        <input type="checkbox" id="autoEdgeToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
 
     <div class="buttons">
       <button class="action-btn" id="captureBtn">Capture Page</button>
       <button class="action-btn" id="nextBtn" disabled>Next Page</button>
       <button class="action-btn" id="createPdf" disabled>Create PDF</button>
-      <button class="action-btn" id="resetBtn" style="background:#dc3545;" disabled>Reset All</button>
+      <button class="action-btn" id="resetBtn" disabled>Reset All</button>
+      <br>
+      <button class="action-btn" id="cameraToggle">🔄 Flip Camera</button>
     </div>
 
     <p id="status">Document Rakho Ane Capture Page Par Click Karo</p>
@@ -120,21 +181,48 @@
     const nextBtn = document.getElementById('nextBtn');
     const createPdfBtn = document.getElementById('createPdf');
     const resetBtn = document.getElementById('resetBtn');
+    const cameraToggleBtn = document.getElementById('cameraToggle');
+    const autoEdgeToggle = document.getElementById('autoEdgeToggle');
+    const filenameInput = document.getElementById('filenameInput');
     const status = document.getElementById('status');
     const pageCountText = document.getElementById('pageCountText');
+    const pageThumbs = document.getElementById('pageThumbs');
 
     let stream = null;
     let cropper = null;
-    let pages = [];
+    let pages = []; // { dataUrl, brightness, contrast, grayscale }
+    let currentFacing = 'environment'; // back camera by default
 
     function updatePageCount() {
       pageCountText.textContent = `Pages Captured: ${pages.length}`;
-      if (pages.length > 0) {
-        createPdfBtn.disabled = false;
-        resetBtn.disabled = false;
-      } else {
-        createPdfBtn.disabled = true;
-        resetBtn.disabled = true;
+      renderThumbs();
+      createPdfBtn.disabled = pages.length === 0;
+      resetBtn.disabled = pages.length === 0;
+    }
+
+    function renderThumbs() {
+      pageThumbs.innerHTML = '';
+      pages.forEach((p, idx) => {
+        const img = document.createElement('img');
+        img.src = p.dataUrl;
+        img.className = 'page-thumb';
+        img.title = `Page ${idx + 1}`;
+        img.onclick = () => removePage(idx);
+
+        const overlay = document.createElement('span');
+        overlay.className = 'page-thumb-overlay';
+        overlay.textContent = '×';
+        img.appendChild(overlay);
+
+        pageThumbs.appendChild(img);
+      });
+    }
+
+    function removePage(idx) {
+      if (confirm(`Page ${idx + 1} remove karvu cho?`)) {
+        pages.splice(idx, 1);
+        updatePageCount();
+        status.textContent = `Page ${idx + 1} remove thai gayu.`;
       }
     }
 
@@ -145,17 +233,30 @@
           stream = null;
         }
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment', width: { ideal: 1600 }, height: { ideal: 1200 } }
+          video: {
+            facingMode: currentFacing,
+            width: { ideal: 1920 },
+            height: { ideal: 1440 }
+          }
         });
         video.srcObject = stream;
+        status.textContent = 'Camera ready. Document rakho ane Capture Page par click karo.';
       } catch (err) {
         status.textContent = 'Camera Permission Error: ' + err.message;
       }
     }
 
+    cameraToggleBtn.onclick = async () => {
+      currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+      await startCamera();
+    };
+
     startCamera();
 
+    // Capture button - photo lao ane crop area open karo
     captureBtn.onclick = () => {
+      if (!stream) { startCamera(); return; }
+
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -168,10 +269,7 @@
       video.style.display = 'none';
       cropArea.style.display = 'block';
 
-      if (cropper) {
-        cropper.destroy();
-        cropper = null;
-      }
+      if (cropper) { cropper.destroy(); cropper = null; }
 
       cropper = new Cropper(preview, {
         aspectRatio: NaN,
@@ -181,18 +279,22 @@
         background: false,
         zoomable: true,
         scalable: true,
-        movable: true
+        movable: true,
+        ready() {
+          if (autoEdgeToggle.checked) runAutoEdgeDetection();
+        }
       });
 
       captureBtn.disabled = true;
+      // Create PDF always enabled once capture thai jay (ek page hoy to pan)
+      createPdfBtn.disabled = false;
       nextBtn.disabled = false;
-      status.textContent = 'Extra Part Crop Karo, Pachi Next Page Par Click Karo';
+      status.textContent = 'Extra part crop karo ane Next Page par click karo, ke direct Create PDF.';
     };
 
+    // Next Page - pega page save karo ane camera reconnect
     nextBtn.onclick = () => {
-      if (cropper) {
-        saveCurrentPage();
-      }
+      saveCurrentPage();
 
       if (cropper) cropper.destroy();
       cropper = null;
@@ -204,38 +306,39 @@
       captureBtn.disabled = false;
       nextBtn.disabled = true;
 
-      status.textContent = 'Navo Page Scan Karo... Capture Page Par Click Karo';
+      status.textContent = 'Navo page scan karo... Capture Page par click karo';
       startCamera();
     };
 
+    // Create PDF - direct (ek page hoy to pan)
     createPdfBtn.onclick = () => {
-      if (cropper) {
-        saveCurrentPage();
+      if (cropper) saveCurrentPage();
+
+      if (pages.length === 0) {
+        status.textContent = 'Pehla koi to page capture karo!';
+        return;
       }
 
-      if (pages.length === 0) return;
+      status.textContent = 'PDF banavai rahu che... please wait';
 
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-      pages.forEach((imgData, i) => {
+      pages.forEach((p, i) => {
         if (i > 0) pdf.addPage();
-        const img = new Image();
-        img.onload = function () { };
-        pdf.addImage(imgData, 'JPEG', 10, 10, 190, 277, undefined, 'FAST');
+        pdf.addImage(p.dataUrl, 'JPEG', 10, 10, 190, 277, undefined, 'FAST');
       });
 
-      pdf.save('Scanned-Document.pdf');
-      status.textContent = `PDF Banavi Gayu Che. Total Pages: ${pages.length}`;
+      const fileName = (filenameInput.value || 'Scanned-Document').trim() + '.pdf';
+      pdf.save(fileName);
+      status.textContent = `✅ PDF bani gayu: ${fileName} (Total ${pages.length} pages)`;
     };
 
+    // Reset
     resetBtn.onclick = () => {
-      if (confirm('Badha Pages Delete Karva Mango Cho?')) {
+      if (confirm('Badha pages delete karva mango cho?')) {
         pages = [];
-        if (cropper) {
-          cropper.destroy();
-          cropper = null;
-        }
+        if (cropper) { cropper.destroy(); cropper = null; }
         preview.src = '';
         cropArea.style.display = 'none';
         video.style.display = 'block';
@@ -244,7 +347,7 @@
         createPdfBtn.disabled = true;
         resetBtn.disabled = true;
         updatePageCount();
-        status.textContent = 'Sab Reset Thai Gayu. Navo Scan Sharu Karo.';
+        status.textContent = 'Sab reset thai gayu. Navo scan karo.';
         startCamera();
       }
     };
@@ -257,10 +360,114 @@
           maxWidth: 2000
         });
         if (croppedCanvas) {
-          const imgData = croppedCanvas.toDataURL('image/jpeg', 0.9);
-          pages.push(imgData);
+          pages.push({ dataUrl: croppedCanvas.toDataURL('image/jpeg', 0.9) });
           updatePageCount();
         }
+      }
+    }
+
+    // ------------------------------------------------------------
+    // AUTO EDGE DETECTION
+    // Capture thayelo image paper edges detect karine auto-crop apply kare che
+    // ------------------------------------------------------------
+    function runAutoEdgeDetection() {
+      try {
+        const imgData = preview.src;
+        if (!imgData) return;
+
+        const tmpImg = new Image();
+        tmpImg.onload = () => {
+          const w = Math.min(800, tmpImg.width);
+          const h = (tmpImg.height * w) / tmpImg.width;
+
+          const tmpCanvas = document.createElement('canvas');
+          tmpCanvas.width = w;
+          tmpCanvas.height = h;
+          const tmpCtx = tmpCanvas.getContext('2d');
+          tmpCtx.drawImage(tmpImg, 0, 0, w, h);
+
+          const imageData = tmpCtx.getImageData(0, 0, w, h);
+          const data = imageData.data;
+
+          // 1. Convert to grayscale
+          for (let i = 0; i < data.length; i += 4) {
+            const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+            data[i] = data[i + 1] = data[i + 2] = avg;
+          }
+
+          // 2. Sobel edge detection
+          const edges = new Uint8ClampedArray(w * h);
+          const gray = new Uint8ClampedArray(w * h);
+          for (let i = 0; i < data.length; i += 4) gray[i / 4] = data[i];
+
+          const max = (x, y) => Math.min(w - 1, Math.max(1, x));
+
+          for (let y = 1; y < h - 1; y++) {
+            for (let x = 1; x < w - 1; x++) {
+              const gx =
+                -gray[(y - 1) * w + max(x - 1)] +
+                gray[(y - 1) * w + max(x + 1)] +
+                -2 * gray[y * w + max(x - 1)] +
+                2 * gray[y * w + max(x + 1)] +
+                -gray[(y + 1) * w + max(x - 1)] +
+                gray[(y + 1) * w + max(x + 1)];
+
+              const gy =
+                -gray[(y - 1) * w + max(x - 1)] -
+                2 * gray[(y - 1) * w + x] -
+                gray[(y - 1) * w + max(x + 1)] +
+                gray[(y + 1) * w + max(x - 1)] +
+                2 * gray[(y + 1) * w + x] +
+                gray[(y + 1) * w + max(x + 1)];
+
+              edges[y * w + x] = Math.min(255, Math.sqrt(gx * gx + gy * gy));
+            }
+          }
+
+          // 3. Find bounding box of edge pixels (paper)
+          let minX = w, minY = h, maxX = 0, maxY = 0;
+          let found = false;
+          for (let i = 0; i < edges.length; i++) {
+            if (edges[i] > 60) {
+              const x = i % w;
+              const y = Math.floor(i / w);
+              if (x < minX) minX = x;
+              if (y < minY) minY = y;
+              if (x > maxX) maxX = x;
+              if (y > maxY) maxY = y;
+              found = true;
+            }
+          }
+
+          if (!found || maxX <= minX || maxY <= minY) {
+            status.textContent += ' (auto-edge: paper not detected)';
+            return;
+          }
+
+          // 4. Add small padding inside detected box
+          const padding = 10;
+          minX = Math.max(0, minX + padding);
+          minY = Math.max(0, minY + padding);
+          maxX = Math.min(w, maxX - padding);
+          maxY = Math.min(h, maxY - padding);
+
+          // 5. Scale back to original image coordinates
+          const scaleX = tmpImg.width / w;
+          const scaleY = tmpImg.height / h;
+
+          const cropData = {
+            x: minX * scaleX,
+            y: minY * scaleY,
+            width: (maxX - minX) * scaleX,
+            height: (maxY - minY) * scaleY
+          };
+
+          if (cropper) cropper.setData(cropData);
+          status.textContent += ' (auto-edge applied)';
+        };
+        tmpImg.src = imgData;
+      } catch (e) {
+        console.warn('Auto edge failed:', e);
       }
     }
   </script>
