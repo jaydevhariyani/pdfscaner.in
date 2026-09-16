@@ -55,7 +55,7 @@
       <img id="preview" alt="Captured page">
     </div>
 
-    <div class="page-info" id="pageCountText">Pages captured: 0</div>
+    <div class="page-info" id="pageCountText">Pages Captured: 0</div>
 
     <div class="buttons">
       <button class="action-btn" id="captureBtn">Capture Page</button>
@@ -64,7 +64,7 @@
       <button class="action-btn" id="resetBtn" style="background:#dc3545;" disabled>Reset All</button>
     </div>
 
-    <p id="status">Position document and click Capture</p>
+    <p id="status">Document Rakho Ane Capture Page Par Click Karo</p>
   </div>
 
   <!-- ABOUT US SECTION -->
@@ -104,11 +104,11 @@
       document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
-      
-      // Stop camera if navigating away from scanner to save battery/resources
-      if(id !== 'scanner' && stream) {
+
+      if (id !== 'scanner' && stream) {
         stream.getTracks().forEach(track => track.stop());
-      } else if(id === 'scanner') {
+        stream = null;
+      } else if (id === 'scanner') {
         startCamera();
       }
     }
@@ -128,24 +128,28 @@
     let pages = [];
 
     function updatePageCount() {
-      pageCountText.textContent = `Pages captured: ${pages.length}`;
-      resetBtn.disabled = pages.length === 0;
+      pageCountText.textContent = `Pages Captured: ${pages.length}`;
+      if (pages.length > 0) {
+        createPdfBtn.disabled = false;
+        resetBtn.disabled = false;
+      } else {
+        createPdfBtn.disabled = true;
+        resetBtn.disabled = true;
+      }
     }
 
     async function startCamera() {
       try {
-        if(stream) return; // already running
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          stream = null;
+        }
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+          video: { facingMode: 'environment', width: { ideal: 1600 }, height: { ideal: 1200 } }
         });
         video.srcObject = stream;
-        video.style.display = 'block';
-        cropArea.style.display = 'none';
-        captureBtn.disabled = false;
-        nextBtn.disabled = true;
-        status.textContent = 'Position document and click Capture';
       } catch (err) {
-        status.textContent = 'Camera error or permission denied: ' + err.message;
+        status.textContent = 'Camera Permission Error: ' + err.message;
       }
     }
 
@@ -153,35 +157,62 @@
 
     captureBtn.onclick = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth || 1280;
-      canvas.height = video.videoHeight || 720;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      preview.src = canvas.toDataURL('image/jpeg', 0.9);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/jpeg', 0.95);
+
+      preview.src = imageData;
 
       video.style.display = 'none';
       cropArea.style.display = 'block';
-      captureBtn.disabled = true;
 
-      if (cropper) cropper.destroy();
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+
       cropper = new Cropper(preview, {
         aspectRatio: NaN,
         viewMode: 1,
-        autoCropArea: 0.9,
-        background: false
+        dragMode: 'crop',
+        autoCropArea: 0.95,
+        background: false,
+        zoomable: true,
+        scalable: true,
+        movable: true
       });
 
+      captureBtn.disabled = true;
       nextBtn.disabled = false;
-      createPdfBtn.disabled = false;
-      status.textContent = 'Crop extra parts, then click Next Page or Create PDF';
+      status.textContent = 'Extra Part Crop Karo, Pachi Next Page Par Click Karo';
     };
 
     nextBtn.onclick = () => {
-      saveCurrentPage();
+      if (cropper) {
+        saveCurrentPage();
+      }
+
+      if (cropper) cropper.destroy();
+      cropper = null;
+
+      preview.src = '';
+      cropArea.style.display = 'none';
+      video.style.display = 'block';
+
+      captureBtn.disabled = false;
+      nextBtn.disabled = true;
+
+      status.textContent = 'Navo Page Scan Karo... Capture Page Par Click Karo';
       startCamera();
     };
 
     createPdfBtn.onclick = () => {
-      saveCurrentPage();
+      if (cropper) {
+        saveCurrentPage();
+      }
+
       if (pages.length === 0) return;
 
       const { jsPDF } = window.jspdf;
@@ -189,30 +220,47 @@
 
       pages.forEach((imgData, i) => {
         if (i > 0) pdf.addPage();
-        const pageWidth = 210;
-        const pageHeight = 297;
-        const w = 190;
-        const h = 277;
-        pdf.addImage(imgData, 'JPEG', 10, 10, w, h);
+        const img = new Image();
+        img.onload = function () { };
+        pdf.addImage(imgData, 'JPEG', 10, 10, 190, 277, undefined, 'FAST');
       });
 
-      pdf.save('scanned-document.pdf');
-      status.textContent = `PDF created with ${pages.length} page(s)!`;
+      pdf.save('Scanned-Document.pdf');
+      status.textContent = `PDF Banavi Gayu Che. Total Pages: ${pages.length}`;
     };
 
     resetBtn.onclick = () => {
-      pages = [];
-      updatePageCount();
-      status.textContent = 'Reset done. Position document and capture.';
+      if (confirm('Badha Pages Delete Karva Mango Cho?')) {
+        pages = [];
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+        preview.src = '';
+        cropArea.style.display = 'none';
+        video.style.display = 'block';
+        captureBtn.disabled = false;
+        nextBtn.disabled = true;
+        createPdfBtn.disabled = true;
+        resetBtn.disabled = true;
+        updatePageCount();
+        status.textContent = 'Sab Reset Thai Gayu. Navo Scan Sharu Karo.';
+        startCamera();
+      }
     };
 
     function saveCurrentPage() {
       if (cropper) {
-        const cropped = cropper.getCroppedCanvas({ maxWidth: 1600, fillColor: '#fff' });
-        pages.push(cropped.toDataURL('image/jpeg', 0.85));
-        cropper.destroy();
-        cropper = null;
-        updatePageCount();
+        const croppedCanvas = cropper.getCroppedCanvas({
+          imageSmoothingQuality: 'high',
+          fillColor: '#ffffff',
+          maxWidth: 2000
+        });
+        if (croppedCanvas) {
+          const imgData = croppedCanvas.toDataURL('image/jpeg', 0.9);
+          pages.push(imgData);
+          updatePageCount();
+        }
       }
     }
   </script>
