@@ -48,6 +48,105 @@
   <meta name="geo.position" content="21.1702;72.8311">
   <meta name="ICBM" content="21.1702, 72.8311">
 
+  <!-- ==================== SCHEMA MARKUP (JSON-LD) ==================== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://pdfscaner.in/#website",
+        "url": "https://pdfscaner.in/",
+        "name": "pdfscaner.in",
+        "description": "Free Online PDF Scanner, Live Metal Prices and Currency Converter",
+        "publisher": {
+          "@id": "https://pdfscaner.in/#organization"
+        },
+        "inLanguage": "en-IN"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://pdfscaner.in/#organization",
+        "name": "pdfscaner.in",
+        "url": "https://pdfscaner.in/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://pdfscaner.in/logo.png"
+        },
+        "founder": {
+          "@type": "Person",
+          "name": "Jaydevbhai Hariyani",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Surat",
+            "addressRegion": "Gujarat",
+            "addressCountry": "IN"
+          }
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "jaydevhariyani@gmail.com",
+          "contactType": "customer support",
+          "areaServed": "IN",
+          "availableLanguage": ["English", "Gujarati", "Hindi"]
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Free Online PDF Scanner",
+        "url": "https://pdfscaner.in/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and Camera access",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        },
+        "description": "Scan physical documents using your camera and convert them into multi-page A4 PDF files directly in the browser. 100% private and free.",
+        "featureList": [
+          "Camera based document scanning",
+          "Auto edge detection",
+          "Multi-page PDF creation",
+          "Live Gold & Silver prices",
+          "World Currency Converter"
+        ],
+        "creator": {
+          "@type": "Person",
+          "name": "Jaydevbhai Hariyani"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Live Metal Prices",
+        "url": "https://pdfscaner.in/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        },
+        "description": "Check real-time Gold, Silver, Platinum and Palladium prices in USD and Indian Rupees (INR)."
+      },
+      {
+        "@type": "WebApplication",
+        "name": "World Currency Converter",
+        "url": "https://pdfscaner.in/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        },
+        "description": "Convert between major world currencies with live exchange rates including USD, EUR, GBP, INR and more."
+      }
+    ]
+  }
+  </script>
+  <!-- ==================== END SCHEMA MARKUP ==================== -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -161,505 +260,4 @@
       <button onclick="showSection('scanner', this)" class="active">Scanner</button>
       <button onclick="showSection('metal', this)">Metal Prices</button>
       <button onclick="showSection('currency', this)">Currency</button>
-      <button onclick="showSection('about', this)">About Us</button>
-      <button onclick="showSection('privacy', this)">Privacy Policy</button>
-      <button onclick="showSection('contact', this)">Contact Us</button>
-    </nav>
-  </header>
-  <!-- SCANNER SECTION -->
-  <div id="scanner" class="section active">
-    <video id="video" autoplay playsinline></video>
-    <div id="cropArea">
-      <img id="preview" alt="Captured page">
-    </div>
-    <div class="page-info" id="pageCountText">Pages Captured: 0</div>
-    <div class="page-thumb-row" id="pageThumbs"></div>
-    <div class="settings-row">
-      <label for="filenameInput">PDF File Name:</label>
-      <input type="text" id="filenameInput" placeholder="My Scanned PDF" value="Scanned-Document">
-      <label for="autoEdgeToggle">Auto Edge:</label>
-      <label class="switch">
-        <input type="checkbox" id="autoEdgeToggle" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="buttons">
-      <button class="action-btn" id="captureBtn">Capture Page</button>
-      <button class="action-btn" id="nextBtn" disabled>Next Page</button>
-      <button class="action-btn" id="createPdf" disabled>Create PDF</button>
-      <button class="action-btn" id="resetBtn" disabled>Reset All</button>
-      <br>
-      <button class="action-btn" id="cameraToggle">🔄 Flip Camera</button>
-    </div>
-    <p id="status">Place your document and click Capture Page</p>
-  </div>
-  <!-- METAL PRICES SECTION -->
-  <div id="metal" class="section">
-    <h2>Live Metal Prices <span class="live-badge">LIVE</span></h2>
-    <p style="text-align:center;color:#666;margin-bottom:15px;font-size:14px;">
-      Real-time prices in USD & INR (per ounce & per gram)
-    </p>
-    <div id="metalPrices">
-      <p style="text-align:center;color:#888;">Loading live prices...</p>
-    </div>
-    <div class="buttons">
-      <button class="action-btn refresh-btn" onclick="loadMetalPrices()">🔄 Refresh Live Prices</button>
-    </div>
-  </div>
-  <!-- CURRENCY SECTION -->
-  <div id="currency" class="section">
-    <h2>World Currency <span class="live-badge">LIVE</span></h2>
-    
-    <div class="currency-row">
-      <input type="number" id="amount" value="1" min="0" step="any" style="width:100px;">
-      <select id="fromCurrency"></select>
-      <span style="font-size:18px;">→</span>
-      <select id="toCurrency"></select>
-    </div>
-    
-    <div style="text-align:center;margin:15px 0;">
-      <button class="action-btn" onclick="convertCurrency()">Convert</button>
-    </div>
-    
-    <div id="convertResult" style="text-align:center;font-size:20px;font-weight:bold;color:#28a745;min-height:30px;"></div>
-    <h3 style="margin-top:25px;margin-bottom:8px;text-align:center;">
-      Live Rates (1 unit = ? INR)
-    </h3>
-    <div class="currency-list" id="currencyList"></div>
-  </div>
-  <!-- ABOUT US SECTION -->
-  <div id="about" class="section static-page">
-    <h2>About Us</h2>
-    <p>Welcome to <strong>pdfscaner.in</strong>, your fast, secure, and browser-based document scanning utility managed by <strong>Jaydevbhai Hariyani</strong> from <strong>Surat, Gujarat</strong>.</p>
-    <p>We built this tool to help users quickly capture multi-page physical documents, crop unnecessary edges, and convert them clean into standard A4 PDF files directly from their mobile or desktop browser without installing heavy apps.</p>
-  </div>
-  <!-- PRIVACY POLICY SECTION -->
-  <div id="privacy" class="section static-page">
-    <h2>Privacy Policy</h2>
-    <p>Your privacy is 100% protected with pdfscaner.in:</p>
-    <ul>
-      <li><strong>Client-Side Processing:</strong> All image capture, cropping, and PDF compilation happen locally inside your browser memory.</li>
-      <li><strong>No Server Uploads:</strong> Your scanned documents/images are <em>never</em> uploaded or stored on any remote server.</li>
-      <li><strong>No Tracking:</strong> We do not collect or sell your personal document data.</li>
-    </ul>
-  </div>
-  <!-- CONTACT US SECTION -->
-  <div id="contact" class="section static-page">
-    <h2>Contact Us</h2>
-    <p>Have suggestions, bug reports, or feature requests? Reach out to us:</p>
-    <p>Name: <strong>Jaydevbhai Hariyani</strong></p>
-    <p>Email: <strong>jaydevhariyani@gmail.com</strong></p>
-    <p>Address: <strong>Surat, Gujarat, India</strong></p>
-    <p>Website: <strong>https://pdfscaner.in</strong></p>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    // Navigation
-    function showSection(id, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
-      
-      if (id !== 'scanner' && stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      } else if (id === 'scanner') {
-        startCamera();
-      }
-      if (id === 'metal') loadMetalPrices();
-      if (id === 'currency') initCurrency();
-    }
-    // ===== Scanner Code (unchanged) =====
-    const video = document.getElementById('video');
-    const preview = document.getElementById('preview');
-    const cropArea = document.getElementById('cropArea');
-    const captureBtn = document.getElementById('captureBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const createPdfBtn = document.getElementById('createPdf');
-    const resetBtn = document.getElementById('resetBtn');
-    const cameraToggleBtn = document.getElementById('cameraToggle');
-    const autoEdgeToggle = document.getElementById('autoEdgeToggle');
-    const filenameInput = document.getElementById('filenameInput');
-    const status = document.getElementById('status');
-    const pageCountText = document.getElementById('pageCountText');
-    const pageThumbs = document.getElementById('pageThumbs');
-    let stream = null;
-    let cropper = null;
-    let pages = [];
-    let currentFacing = 'environment';
-    function updatePageCount() {
-      pageCountText.textContent = `Pages Captured: ${pages.length}`;
-      renderThumbs();
-      createPdfBtn.disabled = pages.length === 0;
-      resetBtn.disabled = pages.length === 0;
-    }
-    function renderThumbs() {
-      pageThumbs.innerHTML = '';
-      pages.forEach((p, idx) => {
-        const img = document.createElement('img');
-        img.src = p.dataUrl;
-        img.className = 'page-thumb';
-        img.title = `Page ${idx + 1}`;
-        img.onclick = () => removePage(idx);
-        const overlay = document.createElement('span');
-        overlay.className = 'page-thumb-overlay';
-        overlay.textContent = '×';
-        img.appendChild(overlay);
-        pageThumbs.appendChild(img);
-      });
-    }
-    function removePage(idx) {
-      if (confirm(`Are you sure you want to remove Page ${idx + 1}?`)) {
-        pages.splice(idx, 1);
-        updatePageCount();
-        status.textContent = `Page ${idx + 1} has been removed.`;
-      }
-    }
-    async function startCamera() {
-      try {
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-          stream = null;
-        }
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: currentFacing,
-            width: { ideal: 1920 },
-            height: { ideal: 1440 }
-          }
-        });
-        video.srcObject = stream;
-        status.textContent = 'Camera ready. Place your document and click Capture Page.';
-      } catch (err) {
-        status.textContent = 'Camera permission error: ' + err.message;
-      }
-    }
-    cameraToggleBtn.onclick = async () => {
-      currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
-      await startCamera();
-    };
-    startCamera();
-    captureBtn.onclick = () => {
-      if (!stream) { startCamera(); return; }
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/jpeg', 0.95);
-      preview.src = imageData;
-      video.style.display = 'none';
-      cropArea.style.display = 'block';
-      if (cropper) { cropper.destroy(); cropper = null; }
-      cropper = new Cropper(preview, {
-        aspectRatio: NaN,
-        viewMode: 1,
-        dragMode: 'crop',
-        autoCropArea: 0.95,
-        background: false,
-        zoomable: true,
-        scalable: true,
-        movable: true,
-        ready() {
-          if (autoEdgeToggle.checked) runAutoEdgeDetection();
-        }
-      });
-      captureBtn.disabled = true;
-      createPdfBtn.disabled = false;
-      nextBtn.disabled = false;
-      status.textContent = 'Crop the extra part, then click Next Page or Create PDF.';
-    };
-    nextBtn.onclick = () => {
-      saveCurrentPage();
-      if (cropper) cropper.destroy();
-      cropper = null;
-      preview.src = '';
-      cropArea.style.display = 'none';
-      video.style.display = 'block';
-      captureBtn.disabled = false;
-      nextBtn.disabled = true;
-      status.textContent = 'Scan the next page... Click Capture Page to continue.';
-      startCamera();
-    };
-    createPdfBtn.onclick = () => {
-      if (cropper) saveCurrentPage();
-      if (pages.length === 0) {
-        status.textContent = 'Please capture at least one page first!';
-        return;
-      }
-      status.textContent = 'Generating PDF... please wait';
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      pages.forEach((p, i) => {
-        if (i > 0) pdf.addPage();
-        pdf.addImage(p.dataUrl, 'JPEG', 10, 10, 190, 277, undefined, 'FAST');
-      });
-      const fileName = (filenameInput.value || 'Scanned-Document').trim() + '.pdf';
-      pdf.save(fileName);
-      status.textContent = `✅ PDF created: ${fileName} (Total ${pages.length} pages)`;
-    };
-    resetBtn.onclick = () => {
-      if (confirm('Are you sure you want to delete all captured pages?')) {
-        pages = [];
-        if (cropper) { cropper.destroy(); cropper = null; }
-        preview.src = '';
-        cropArea.style.display = 'none';
-        video.style.display = 'block';
-        captureBtn.disabled = false;
-        nextBtn.disabled = true;
-        createPdfBtn.disabled = true;
-        resetBtn.disabled = true;
-        updatePageCount();
-        status.textContent = 'All pages cleared. Start a new scan.';
-        startCamera();
-      }
-    };
-    function saveCurrentPage() {
-      if (cropper) {
-        const croppedCanvas = cropper.getCroppedCanvas({
-          imageSmoothingQuality: 'high',
-          fillColor: '#ffffff',
-          maxWidth: 2000
-        });
-        if (croppedCanvas) {
-          pages.push({ dataUrl: croppedCanvas.toDataURL('image/jpeg', 0.9) });
-          updatePageCount();
-        }
-      }
-    }
-    function runAutoEdgeDetection() {
-      try {
-        const imgData = preview.src;
-        if (!imgData) return;
-        const tmpImg = new Image();
-        tmpImg.onload = () => {
-          const w = Math.min(800, tmpImg.width);
-          const h = (tmpImg.height * w) / tmpImg.width;
-          const tmpCanvas = document.createElement('canvas');
-          tmpCanvas.width = w;
-          tmpCanvas.height = h;
-          const tmpCtx = tmpCanvas.getContext('2d');
-          tmpCtx.drawImage(tmpImg, 0, 0, w, h);
-          const imageData = tmpCtx.getImageData(0, 0, w, h);
-          const data = imageData.data;
-          for (let i = 0; i < data.length; i += 4) {
-            const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
-            data[i] = data[i + 1] = data[i + 2] = avg;
-          }
-          const edges = new Uint8ClampedArray(w * h);
-          const gray = new Uint8ClampedArray(w * h);
-          for (let i = 0; i < data.length; i += 4) gray[i / 4] = data[i];
-          const max = (x, y) => Math.min(w - 1, Math.max(1, x));
-          for (let y = 1; y < h - 1; y++) {
-            for (let x = 1; x < w - 1; x++) {
-              const gx =
-                -gray[(y - 1) * w + max(x - 1)] +
-                gray[(y - 1) * w + max(x + 1)] +
-                -2 * gray[y * w + max(x - 1)] +
-                2 * gray[y * w + max(x + 1)] +
-                -gray[(y + 1) * w + max(x - 1)] +
-                gray[(y + 1) * w + max(x + 1)];
-              const gy =
-                -gray[(y - 1) * w + max(x - 1)] -
-                2 * gray[(y - 1) * w + x] -
-                gray[(y - 1) * w + max(x + 1)] +
-                gray[(y + 1) * w + max(x - 1)] +
-                2 * gray[(y + 1) * w + x] +
-                gray[(y + 1) * w + max(x + 1)];
-              edges[y * w + x] = Math.min(255, Math.sqrt(gx * gx + gy * gy));
-            }
-          }
-          let minX = w, minY = h, maxX = 0, maxY = 0;
-          let found = false;
-          for (let i = 0; i < edges.length; i++) {
-            if (edges[i] > 60) {
-              const x = i % w;
-              const y = Math.floor(i / w);
-              if (x < minX) minX = x;
-              if (y < minY) minY = y;
-              if (x > maxX) maxX = x;
-              if (y > maxY) maxY = y;
-              found = true;
-            }
-          }
-          if (!found || maxX <= minX || maxY <= minY) {
-            status.textContent += ' (auto-edge: paper not detected)';
-            return;
-          }
-          const padding = 10;
-          minX = Math.max(0, minX + padding);
-          minY = Math.max(0, minY + padding);
-          maxX = Math.min(w, maxX - padding);
-          maxY = Math.min(h, maxY - padding);
-          const scaleX = tmpImg.width / w;
-          const scaleY = tmpImg.height / h;
-          const cropData = {
-            x: minX * scaleX,
-            y: minY * scaleY,
-            width: (maxX - minX) * scaleX,
-            height: (maxY - minY) * scaleY
-          };
-          if (cropper) cropper.setData(cropData);
-          status.textContent += ' (auto-edge applied)';
-        };
-        tmpImg.src = imgData;
-      } catch (e) {
-        console.warn('Auto edge failed:', e);
-      }
-    }
-    // ============================================================
-    // METAL PRICES - LIVE
-    // ============================================================
-    async function loadMetalPrices() {
-      const container = document.getElementById('metalPrices');
-      container.innerHTML = '<p style="text-align:center;color:#888;">Loading live prices...</p>';
-      try {
-        const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
-        const data = await res.json();
-        const rates = data.usd;
-        const goldUSD = 1 / rates.xau;
-        const silverUSD = 1 / rates.xag;
-        const platinumUSD = 1 / rates.xpt;
-        const palladiumUSD = 1 / rates.xpd;
-        const inrRate = rates.inr;
-        const metals = [
-          { name: '🥇 Gold (24K)', usd: goldUSD, color: '#FFD700' },
-          { name: '🥈 Silver', usd: silverUSD, color: '#C0C0C0' },
-          { name: 'Platinum', usd: platinumUSD, color: '#E5E4E2' },
-          { name: 'Palladium', usd: palladiumUSD, color: '#CED0DD' }
-        ];
-        let html = '';
-        metals.forEach(m => {
-          const inrOz = m.usd * inrRate;
-          const inrGram = inrOz / 31.1035;
-          html += `
-            <div class="price-card" style="border-left-color:${m.color}">
-              <h3>${m.name}</h3>
-              <div class="usd">$${m.usd.toFixed(2)} / oz</div>
-              <div class="inr">
-                ₹${inrOz.toLocaleString('en-IN', {maximumFractionDigits:0})} / oz &nbsp;•&nbsp;
-                ₹${inrGram.toLocaleString('en-IN', {maximumFractionDigits:0})} / gram
-              </div>
-            </div>
-          `;
-        });
-        html += `<p style="text-align:center;font-size:12px;color:#999;margin-top:12px;">
-          ✅ Live Rate • Updated: ${data.date}
-        </p>`;
-        container.innerHTML = html;
-      } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:#dc3545;">Failed to load live prices.<br>${err.message}</p>`;
-      }
-    }
-    // ============================================================
-    // CURRENCY - LIVE RATES
-    // ============================================================
-    const currencyData = [
-      { code: 'INR', name: 'Indian Rupee', symbol: '₹', country: 'India' },
-      { code: 'USD', name: 'US Dollar', symbol: '$', country: 'United States' },
-      { code: 'EUR', name: 'Euro', symbol: '€', country: 'European Union' },
-      { code: 'GBP', name: 'British Pound', symbol: '£', country: 'United Kingdom' },
-      { code: 'JPY', name: 'Japanese Yen', symbol: '¥', country: 'Japan' },
-      { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', country: 'Australia' },
-      { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', country: 'Canada' },
-      { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', country: 'Switzerland' },
-      { code: 'CNY', name: 'Chinese Yuan', symbol: '¥', country: 'China' },
-      { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ', country: 'UAE' },
-      { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼', country: 'Saudi Arabia' },
-      { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$', country: 'Singapore' },
-      { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', country: 'Hong Kong' },
-      { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', country: 'New Zealand' },
-      { code: 'KRW', name: 'South Korean Won', symbol: '₩', country: 'South Korea' },
-      { code: 'THB', name: 'Thai Baht', symbol: '฿', country: 'Thailand' },
-      { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM', country: 'Malaysia' },
-      { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp', country: 'Indonesia' },
-      { code: 'PHP', name: 'Philippine Peso', symbol: '₱', country: 'Philippines' },
-      { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨', country: 'Pakistan' },
-      { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳', country: 'Bangladesh' },
-      { code: 'NPR', name: 'Nepalese Rupee', symbol: 'रू', country: 'Nepal' },
-      { code: 'LKR', name: 'Sri Lankan Rupee', symbol: 'Rs', country: 'Sri Lanka' },
-      { code: 'RUB', name: 'Russian Ruble', symbol: '₽', country: 'Russia' },
-      { code: 'TRY', name: 'Turkish Lira', symbol: '₺', country: 'Turkey' },
-      { code: 'BRL', name: 'Brazilian Real', symbol: 'R$', country: 'Brazil' },
-      { code: 'ZAR', name: 'South African Rand', symbol: 'R', country: 'South Africa' },
-      { code: 'MXN', name: 'Mexican Peso', symbol: '$', country: 'Mexico' }
-    ];
-    let ratesCache = null;
-    async function initCurrency() {
-      const fromSelect = document.getElementById('fromCurrency');
-      const toSelect = document.getElementById('toCurrency');
-      const listDiv = document.getElementById('currencyList');
-      if (fromSelect.options.length === 0) {
-        currencyData.forEach(c => {
-          fromSelect.add(new Option(`${c.symbol} ${c.code} - ${c.name}`, c.code));
-          toSelect.add(new Option(`${c.symbol} ${c.code} - ${c.name}`, c.code));
-        });
-        fromSelect.value = 'USD';
-        toSelect.value = 'INR';
-      }
-      listDiv.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Loading live rates...</p>';
-      try {
-        const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
-        const data = await res.json();
-        ratesCache = data.usd;
-        const inr = ratesCache.inr;
-        let listHtml = '';
-        currencyData.forEach(c => {
-          let rateText = '';
-          if (c.code === 'INR') {
-            rateText = '1 INR = 1 INR';
-          } else if (c.code === 'USD') {
-            rateText = `1 USD = ₹${inr.toFixed(2)}`;
-          } else {
-            const rate = ratesCache[c.code.toLowerCase()];
-            if (rate) {
-              const inrValue = inr / rate;
-              rateText = `1 ${c.code} = ₹${inrValue.toFixed(2)}`;
-            } else {
-              rateText = '—';
-            }
-          }
-          listHtml += `
-            <div class="currency-item">
-              <div class="left">
-                <span class="symbol">${c.symbol}</span>
-                <div>
-                  <strong>${c.code}</strong> - ${c.name}<br>
-                  <small style="color:#888;">${c.country}</small>
-                </div>
-              </div>
-              <div class="rate">${rateText}</div>
-            </div>
-          `;
-        });
-        listDiv.innerHTML = listHtml;
-      } catch (e) {
-        listDiv.innerHTML = `<p style="text-align:center;color:#dc3545;padding:20px;">Failed to load live rates</p>`;
-      }
-    }
-    function convertCurrency() {
-      const amount = parseFloat(document.getElementById('amount').value) || 0;
-      const from = document.getElementById('fromCurrency').value.toLowerCase();
-      const to = document.getElementById('toCurrency').value.toLowerCase();
-      const resultDiv = document.getElementById('convertResult');
-      if (!ratesCache) {
-        resultDiv.textContent = 'Rates loading... please wait';
-        return;
-      }
-      const fromRate = from === 'usd' ? 1 : ratesCache[from];
-      const toRate = to === 'usd' ? 1 : ratesCache[to];
-      if (!fromRate || !toRate) {
-        resultDiv.textContent = 'Currency not available';
-        return;
-      }
-      const usdAmount = amount / fromRate;
-      const finalAmount = usdAmount * toRate;
-      const fromSym = currencyData.find(c => c.code === from.toUpperCase())?.symbol || '';
-      const toSym = currencyData.find(c => c.code === to.toUpperCase())?.symbol || '';
-      resultDiv.innerHTML = `${fromSym}${amount.toLocaleString()} = <span style="color:#007bff">${toSym}${finalAmount.toLocaleString(undefined, {maximumFractionDigits: 4})}</span>`;
-    }
-  </script>
-</body>
-</html>
+      <button onclick="showSection('about', this)">About 
