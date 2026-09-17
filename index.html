@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+  <!-- Existing Vignette Ad -->
   <script>(function(s){s.dataset.zone='11817405',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Scanner - pdfscaner.in</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Primary SEO Meta Tags -->
+  <title>Free Online PDF Scanner | Live Gold Silver Price | Currency Converter - pdfscaner.in</title>
+  <meta name="title" content="Free Online PDF Scanner | Live Gold Silver Price | Currency Converter - pdfscaner.in">
+  <meta name="description" content="Free online PDF scanner to scan documents from camera and create multi-page A4 PDF. Also check live gold, silver, platinum prices in India (INR) and convert world currencies instantly. 100% private & browser-based tool by Jaydevbhai Hariyani.">
+  <meta name="keywords" content="pdf scanner online free, scan document to pdf, camera to pdf, live gold price india, silver price today, metal prices, currency converter, usd to inr, free pdf maker, online document scanner, pdfscaner.in">
+  <meta name="author" content="Jaydevbhai Hariyani">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="1 days">
+  <meta name="theme-color" content="#007bff">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://pdfscaner.in/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pdfscaner.in/">
+  <meta property="og:title" content="Free Online PDF Scanner | Live Gold Silver Price | Currency Converter">
+  <meta property="og:description" content="Scan documents to PDF online free + Live gold & silver prices in INR + World currency converter. Fast, secure and private tool.">
+  <meta property="og:image" content="https://pdfscaner.in/og-image.jpg">
+  <meta property="og:site_name" content="pdfscaner.in">
+  <meta property="og:locale" content="en_IN">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://pdfscaner.in/">
+  <meta name="twitter:title" content="Free Online PDF Scanner | Live Gold Silver Price | Currency Converter">
+  <meta name="twitter:description" content="Scan documents to PDF online free + Live gold & silver prices in INR + World currency converter. Fast, secure and private tool.">
+  <meta name="twitter:image" content="https://pdfscaner.in/og-image.jpg">
+
+  <!-- Additional SEO -->
+  <meta name="geo.region" content="IN-GJ">
+  <meta name="geo.placename" content="Surat, Gujarat">
+  <meta name="geo.position" content="21.1702;72.8311">
+  <meta name="ICBM" content="21.1702, 72.8311">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -77,7 +120,6 @@
       width: 20px; height: 20px; display: flex; align-items: center;
       justify-content: center; font-size: 12px; line-height: 1;
     }
-
     /* ===== Tools Styles ===== */
     .price-card {
       background: #f8f9fa; border-radius: 8px; padding: 14px;
@@ -124,7 +166,6 @@
       <button onclick="showSection('contact', this)">Contact Us</button>
     </nav>
   </header>
-
   <!-- SCANNER SECTION -->
   <div id="scanner" class="section active">
     <video id="video" autoplay playsinline></video>
@@ -152,7 +193,6 @@
     </div>
     <p id="status">Place your document and click Capture Page</p>
   </div>
-
   <!-- METAL PRICES SECTION -->
   <div id="metal" class="section">
     <h2>Live Metal Prices <span class="live-badge">LIVE</span></h2>
@@ -166,7 +206,6 @@
       <button class="action-btn refresh-btn" onclick="loadMetalPrices()">🔄 Refresh Live Prices</button>
     </div>
   </div>
-
   <!-- CURRENCY SECTION -->
   <div id="currency" class="section">
     <h2>World Currency <span class="live-badge">LIVE</span></h2>
@@ -183,20 +222,17 @@
     </div>
     
     <div id="convertResult" style="text-align:center;font-size:20px;font-weight:bold;color:#28a745;min-height:30px;"></div>
-
     <h3 style="margin-top:25px;margin-bottom:8px;text-align:center;">
       Live Rates (1 unit = ? INR)
     </h3>
     <div class="currency-list" id="currencyList"></div>
   </div>
-
   <!-- ABOUT US SECTION -->
   <div id="about" class="section static-page">
     <h2>About Us</h2>
     <p>Welcome to <strong>pdfscaner.in</strong>, your fast, secure, and browser-based document scanning utility managed by <strong>Jaydevbhai Hariyani</strong> from <strong>Surat, Gujarat</strong>.</p>
     <p>We built this tool to help users quickly capture multi-page physical documents, crop unnecessary edges, and convert them clean into standard A4 PDF files directly from their mobile or desktop browser without installing heavy apps.</p>
   </div>
-
   <!-- PRIVACY POLICY SECTION -->
   <div id="privacy" class="section static-page">
     <h2>Privacy Policy</h2>
@@ -207,7 +243,6 @@
       <li><strong>No Tracking:</strong> We do not collect or sell your personal document data.</li>
     </ul>
   </div>
-
   <!-- CONTACT US SECTION -->
   <div id="contact" class="section static-page">
     <h2>Contact Us</h2>
@@ -217,7 +252,6 @@
     <p>Address: <strong>Surat, Gujarat, India</strong></p>
     <p>Website: <strong>https://pdfscaner.in</strong></p>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
@@ -234,11 +268,9 @@
       } else if (id === 'scanner') {
         startCamera();
       }
-
       if (id === 'metal') loadMetalPrices();
       if (id === 'currency') initCurrency();
     }
-
     // ===== Scanner Code (unchanged) =====
     const video = document.getElementById('video');
     const preview = document.getElementById('preview');
@@ -257,14 +289,12 @@
     let cropper = null;
     let pages = [];
     let currentFacing = 'environment';
-
     function updatePageCount() {
       pageCountText.textContent = `Pages Captured: ${pages.length}`;
       renderThumbs();
       createPdfBtn.disabled = pages.length === 0;
       resetBtn.disabled = pages.length === 0;
     }
-
     function renderThumbs() {
       pageThumbs.innerHTML = '';
       pages.forEach((p, idx) => {
@@ -280,7 +310,6 @@
         pageThumbs.appendChild(img);
       });
     }
-
     function removePage(idx) {
       if (confirm(`Are you sure you want to remove Page ${idx + 1}?`)) {
         pages.splice(idx, 1);
@@ -288,7 +317,6 @@
         status.textContent = `Page ${idx + 1} has been removed.`;
       }
     }
-
     async function startCamera() {
       try {
         if (stream) {
@@ -308,14 +336,11 @@
         status.textContent = 'Camera permission error: ' + err.message;
       }
     }
-
     cameraToggleBtn.onclick = async () => {
       currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
       await startCamera();
     };
-
     startCamera();
-
     captureBtn.onclick = () => {
       if (!stream) { startCamera(); return; }
       const canvas = document.createElement('canvas');
@@ -346,7 +371,6 @@
       nextBtn.disabled = false;
       status.textContent = 'Crop the extra part, then click Next Page or Create PDF.';
     };
-
     nextBtn.onclick = () => {
       saveCurrentPage();
       if (cropper) cropper.destroy();
@@ -359,7 +383,6 @@
       status.textContent = 'Scan the next page... Click Capture Page to continue.';
       startCamera();
     };
-
     createPdfBtn.onclick = () => {
       if (cropper) saveCurrentPage();
       if (pages.length === 0) {
@@ -377,7 +400,6 @@
       pdf.save(fileName);
       status.textContent = `✅ PDF created: ${fileName} (Total ${pages.length} pages)`;
     };
-
     resetBtn.onclick = () => {
       if (confirm('Are you sure you want to delete all captured pages?')) {
         pages = [];
@@ -394,7 +416,6 @@
         startCamera();
       }
     };
-
     function saveCurrentPage() {
       if (cropper) {
         const croppedCanvas = cropper.getCroppedCanvas({
@@ -408,7 +429,6 @@
         }
       }
     }
-
     function runAutoEdgeDetection() {
       try {
         const imgData = preview.src;
@@ -489,32 +509,27 @@
         console.warn('Auto edge failed:', e);
       }
     }
-
     // ============================================================
     // METAL PRICES - LIVE
     // ============================================================
     async function loadMetalPrices() {
       const container = document.getElementById('metalPrices');
       container.innerHTML = '<p style="text-align:center;color:#888;">Loading live prices...</p>';
-
       try {
         const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
         const data = await res.json();
         const rates = data.usd;
-
         const goldUSD = 1 / rates.xau;
         const silverUSD = 1 / rates.xag;
         const platinumUSD = 1 / rates.xpt;
         const palladiumUSD = 1 / rates.xpd;
         const inrRate = rates.inr;
-
         const metals = [
           { name: '🥇 Gold (24K)', usd: goldUSD, color: '#FFD700' },
           { name: '🥈 Silver', usd: silverUSD, color: '#C0C0C0' },
           { name: 'Platinum', usd: platinumUSD, color: '#E5E4E2' },
           { name: 'Palladium', usd: palladiumUSD, color: '#CED0DD' }
         ];
-
         let html = '';
         metals.forEach(m => {
           const inrOz = m.usd * inrRate;
@@ -530,17 +545,14 @@
             </div>
           `;
         });
-
         html += `<p style="text-align:center;font-size:12px;color:#999;margin-top:12px;">
           ✅ Live Rate • Updated: ${data.date}
         </p>`;
-
         container.innerHTML = html;
       } catch (err) {
         container.innerHTML = `<p style="text-align:center;color:#dc3545;">Failed to load live prices.<br>${err.message}</p>`;
       }
     }
-
     // ============================================================
     // CURRENCY - LIVE RATES
     // ============================================================
@@ -574,14 +586,11 @@
       { code: 'ZAR', name: 'South African Rand', symbol: 'R', country: 'South Africa' },
       { code: 'MXN', name: 'Mexican Peso', symbol: '$', country: 'Mexico' }
     ];
-
     let ratesCache = null;
-
     async function initCurrency() {
       const fromSelect = document.getElementById('fromCurrency');
       const toSelect = document.getElementById('toCurrency');
       const listDiv = document.getElementById('currencyList');
-
       if (fromSelect.options.length === 0) {
         currencyData.forEach(c => {
           fromSelect.add(new Option(`${c.symbol} ${c.code} - ${c.name}`, c.code));
@@ -590,16 +599,12 @@
         fromSelect.value = 'USD';
         toSelect.value = 'INR';
       }
-
       listDiv.innerHTML = '<p style="text-align:center;padding:20px;color:#888;">Loading live rates...</p>';
-
       try {
         const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
         const data = await res.json();
         ratesCache = data.usd;
-
-        const inr = ratesCache.inr; // 1 USD = ? INR
-
+        const inr = ratesCache.inr;
         let listHtml = '';
         currencyData.forEach(c => {
           let rateText = '';
@@ -610,14 +615,12 @@
           } else {
             const rate = ratesCache[c.code.toLowerCase()];
             if (rate) {
-              // 1 unit of this currency = ? INR
               const inrValue = inr / rate;
               rateText = `1 ${c.code} = ₹${inrValue.toFixed(2)}`;
             } else {
               rateText = '—';
             }
           }
-
           listHtml += `
             <div class="currency-item">
               <div class="left">
@@ -631,38 +634,30 @@
             </div>
           `;
         });
-
         listDiv.innerHTML = listHtml;
       } catch (e) {
         listDiv.innerHTML = `<p style="text-align:center;color:#dc3545;padding:20px;">Failed to load live rates</p>`;
       }
     }
-
     function convertCurrency() {
       const amount = parseFloat(document.getElementById('amount').value) || 0;
       const from = document.getElementById('fromCurrency').value.toLowerCase();
       const to = document.getElementById('toCurrency').value.toLowerCase();
       const resultDiv = document.getElementById('convertResult');
-
       if (!ratesCache) {
         resultDiv.textContent = 'Rates loading... please wait';
         return;
       }
-
       const fromRate = from === 'usd' ? 1 : ratesCache[from];
       const toRate = to === 'usd' ? 1 : ratesCache[to];
-
       if (!fromRate || !toRate) {
         resultDiv.textContent = 'Currency not available';
         return;
       }
-
       const usdAmount = amount / fromRate;
       const finalAmount = usdAmount * toRate;
-
       const fromSym = currencyData.find(c => c.code === from.toUpperCase())?.symbol || '';
       const toSym = currencyData.find(c => c.code === to.toUpperCase())?.symbol || '';
-
       resultDiv.innerHTML = `${fromSym}${amount.toLocaleString()} = <span style="color:#007bff">${toSym}${finalAmount.toLocaleString(undefined, {maximumFractionDigits: 4})}</span>`;
     }
   </script>
