@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Metal Prices | Gold & Silver - pdfscaner.in</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 15px; }
+    header { text-align: center; margin-bottom: 20px; }
+    nav a { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin: 2px; border-radius: 20px; text-decoration: none; color: #333; font-weight: bold; }
+    nav a.active { background: #007bff; color: white; }
+    .card { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .price-card { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #007bff; }
+    .price-card h3 { margin-bottom: 6px; color: #333; }
+    .price-card .usd { font-size: 18px; font-weight: bold; color: #28a745; }
+    .price-card .inr { font-size: 15px; color: #555; margin-top: 4px; }
+    button { padding: 10px 16px; border: none; border-radius: 6px; background: #17a2b8; color: white; cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Live Metal Prices</h1>
+    <nav>
+      <a href="index.html">Scanner</a>
+      <a href="metals.html" class="active">Metal Prices</a>
+      <a href="currency.html">Currency</a>
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+  </header>
+
+  <div class="card">
+    <div id="metalPrices"><p style="text-align:center;color:#888;">Loading live prices...</p></div>
+    <div style="text-align:center; margin-top:15px;">
+      <button onclick="loadMetalPrices()">🔄 Refresh Live Prices</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadMetalPrices() {
+      const container = document.getElementById('metalPrices');
+      container.innerHTML = '<p style="text-align:center;color:#888;">Loading live prices...</p>';
+      try {
+        const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+        const data = await res.json();
+        const rates = data.usd;
+        const metals = [
+          { name: '🥇 Gold (24K)', usd: 1 / rates.xau, color: '#FFD700' },
+          { name: '🥈 Silver', usd: 1 / rates.xag, color: '#C0C0C0' },
+          { name: 'Platinum', usd: 1 / rates.xpt, color: '#E5E4E2' },
+          { name: 'Palladium', usd: 1 / rates.xpd, color: '#CED0DD' }
+        ];
+        let html = '';
+        metals.forEach(m => {
+          const inrOz = m.usd * rates.inr;
+          const inrGram = inrOz / 31.1035;
+          html += `
+            <div class="price-card" style="border-left-color:${m.color}">
+              <h3>${m.name}</h3>
+              <div class="usd">$${m.usd.toFixed(2)} / oz</div>
+              <div class="inr">₹${inrOz.toLocaleString('en-IN', {maximumFractionDigits:0})} / oz &nbsp;•&nbsp; ₹${inrGram.toLocaleString('en-IN', {maximumFractionDigits:0})} / gram</div>
+            </div>`;
+        });
+        container.innerHTML = html + `<p style="text-align:center;font-size:12px;color:#999;margin-top:10px;">Updated: ${data.date}</p>`;
+      } catch (err) {
+        container.innerHTML = `<p style="text-align:center;color:#dc3545;">Failed to load live prices.</p>`;
+      }
+    }
+    loadMetalPrices();
+  </script>
+</body>
+</html>
