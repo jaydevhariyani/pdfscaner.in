@@ -18,7 +18,7 @@ let pages = [];
 let currentFacing = 'environment';
 
 function updatePageCount() {
-  pageCountText.textContent = `Pages Captured: ${pages.length}`;
+  pageCountText.textContent = `Pages Scanned: ${pages.length}`;
   renderThumbs();
   createPdfBtn.disabled = pages.length === 0;
   resetBtn.disabled = pages.length === 0;
@@ -28,51 +28,49 @@ function renderThumbs() {
   pageThumbs.innerHTML = '';
   pages.forEach((p, idx) => {
     const wrap = document.createElement('div');
-    wrap.className = 'page-thumb-box';
+    wrap.className = 'thumb-card';
     const img = document.createElement('img');
     img.src = p.dataUrl;
-    img.className = 'page-thumb';
     img.title = `Page ${idx + 1}`;
-    const overlay = document.createElement('span');
-    overlay.className = 'page-thumb-overlay';
-    overlay.textContent = '×';
-    overlay.onclick = () => removePage(idx);
+    const removeBtn = document.createElement('div');
+    removeBtn.className = 'thumb-remove';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = () => removePage(idx);
     wrap.appendChild(img);
-    wrap.appendChild(overlay);
+    wrap.appendChild(removeBtn);
     pageThumbs.appendChild(wrap);
   });
 }
 
 function removePage(idx) {
-  if (confirm(`Are you sure you want to remove Page ${idx + 1}?`)) {
+  if (confirm(`Remove Page ${idx + 1}?`)) {
     pages.splice(idx, 1);
     updatePageCount();
-    status.textContent = `Page ${idx + 1} has been removed.`;
+    status.textContent = `Page ${idx + 1} removed.`;
   }
 }
 
 async function startCamera() {
   try {
-    if (stream) stream.getTracks().forEach(track => track.stop());
+    if (stream) stream.getTracks().forEach(t => t.stop());
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: currentFacing,
         width: { ideal: 2560 },
-        height: { ideal: 1920 },
-        advanced: [{ focusMode: "continuous" }]
+        height: { ideal: 1920 }
       }
     });
     video.srcObject = stream;
-    status.textContent = 'Camera is ready. Hold steady, fit document in frame, and press Capture Page.';
+    status.textContent = 'Camera ready. Position document & capture.';
   } catch (err) {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: currentFacing, width: { ideal: 1920 }, height: { ideal: 1440 } }
+        video: { facingMode: currentFacing, width: { ideal: 1920 }, height: { ideal: 1080 } }
       });
       video.srcObject = stream;
-      status.textContent = 'Camera is ready (standard quality). Press Capture Page.';
+      status.textContent = 'Camera active (standard mode).';
     } catch (e2) {
-      status.textContent = 'Camera permission error: ' + e2.message;
+      status.textContent = 'Camera access blocked: ' + e2.message;
     }
   }
 }
@@ -91,20 +89,26 @@ captureBtn.onclick = () => {
   canvas.height = video.videoHeight;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const imageData = canvas.toDataURL('image/jpeg', 0.97);
-  preview.src = imageData;
+  
+  preview.src = canvas.toDataURL('image/jpeg', 0.98);
   video.style.display = 'none';
   cropArea.style.display = 'block';
   if (cropper) { cropper.destroy(); cropper = null; }
 
+  // aspectRatio: NaN enables 100% free width and height resizing!
   cropper = new Cropper(preview, {
-    aspectRatio: 210 / 297,
+    aspectRatio: NaN,
     viewMode: 1,
     dragMode: 'crop',
-    autoCropArea: 0.92,
+    autoCropArea: 0.9,
     background: false,
     zoomable: true,
+    scalable: true,
+    movable: true,
+    rotatable: true,
     guides: true,
+    cropBoxMovable: true,
+    cropBoxResizable: true,
     ready() {
       if (autoEdgeToggle.checked) runAutoEdgeDetection();
     }
@@ -113,7 +117,7 @@ captureBtn.onclick = () => {
   captureBtn.disabled = true;
   createPdfBtn.disabled = false;
   nextBtn.disabled = false;
-  status.textContent = 'Crop according to A4 size. Then press Next Page or Create PDF.';
+  status.textContent = 'Adjust box horizontally or vertically as needed.';
 };
 
 nextBtn.onclick = () => {
@@ -125,30 +129,33 @@ nextBtn.onclick = () => {
   video.style.display = 'block';
   captureBtn.disabled = false;
   nextBtn.disabled = true;
-  status.textContent = 'Scan next page... Press Capture Page.';
+  status.textContent = 'Scan next page... Click Capture.';
   startCamera();
 };
 
 createPdfBtn.onclick = () => {
   if (cropper) saveCurrentPage();
   if (pages.length === 0) {
-    status.textContent = 'Please capture at least one page first!';
+    status.textContent = 'Scan at least one page first!';
     return;
   }
-  status.textContent = 'Generating PDF... please wait';
+  status.textContent = 'Compiling PDF document...';
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
   pages.forEach((p, i) => {
     if (i > 0) pdf.addPage();
-    pdf.addImage(p.dataUrl, 'JPEG', 8, 8, 194, 281, undefined, 'FAST');
+    // Maintain natural proportional fit on standard A4 canvas
+    pdf.addImage(p.dataUrl, 'JPEG', 10, 10, 190, 277, undefined, 'FAST');
   });
-  const fileName = (filenameInput.value || 'Scanned-Document').trim() + '.pdf';
+
+  const fileName = (filenameInput.value || 'Scanned-Doc').trim() + '.pdf';
   pdf.save(fileName);
-  status.textContent = `✅ PDF created: ${fileName} (Total ${pages.length} pages)`;
+  status.textContent = `✅ Saved ${fileName} (${pages.length} pages)`;
 };
 
 resetBtn.onclick = () => {
-  if (confirm('Are you sure you want to delete all captured pages?')) {
+  if (confirm('Clear all captured pages?')) {
     pages = [];
     if (cropper) { cropper.destroy(); cropper = null; }
     preview.src = '';
@@ -159,7 +166,7 @@ resetBtn.onclick = () => {
     createPdfBtn.disabled = true;
     resetBtn.disabled = true;
     updatePageCount();
-    status.textContent = 'All pages cleared. Start a new scan.';
+    status.textContent = 'Workspace reset. Ready to scan.';
     startCamera();
   }
 };
@@ -170,8 +177,8 @@ function saveCurrentPage() {
       imageSmoothingEnabled: true,
       imageSmoothingQuality: 'high',
       fillColor: '#ffffff',
-      maxWidth: 2500,
-      maxHeight: 3500
+      maxWidth: 2600,
+      maxHeight: 3600
     });
     if (croppedCanvas) {
       pages.push({ dataUrl: croppedCanvas.toDataURL('image/jpeg', 0.95) });
@@ -189,16 +196,14 @@ function runAutoEdgeDetection() {
       const w = Math.min(900, tmpImg.width);
       const h = (tmpImg.height * w) / tmpImg.width;
       const tmpCanvas = document.createElement('canvas');
-      tmpCanvas.width = w;
-      tmpCanvas.height = h;
+      tmpCanvas.width = w; tmpCanvas.height = h;
       const tmpCtx = tmpCanvas.getContext('2d');
       tmpCtx.drawImage(tmpImg, 0, 0, w, h);
       const imageData = tmpCtx.getImageData(0, 0, w, h);
       const data = imageData.data;
 
       for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
-        data[i] = data[i + 1] = data[i + 2] = avg;
+        data[i] = data[i + 1] = data[i + 2] = (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
       }
 
       const edges = new Uint8ClampedArray(w * h);
@@ -207,25 +212,20 @@ function runAutoEdgeDetection() {
 
       for (let y = 1; y < h - 1; y++) {
         for (let x = 1; x < w - 1; x++) {
-          const gx =
-            -gray[(y - 1) * w + (x - 1)] + gray[(y - 1) * w + (x + 1)] +
-            -2 * gray[y * w + (x - 1)] + 2 * gray[y * w + (x + 1)] +
-            -gray[(y + 1) * w + (x - 1)] + gray[(y + 1) * w + (x + 1)];
-          const gy =
-            -gray[(y - 1) * w + (x - 1)] - 2 * gray[(y - 1) * w + x] - gray[(y - 1) * w + (x + 1)] +
-             gray[(y + 1) * w + (x - 1)] + 2 * gray[(y + 1) * w + x] + gray[(y + 1) * w + (x + 1)];
+          const gx = -gray[(y - 1) * w + (x - 1)] + gray[(y - 1) * w + (x + 1)] -
+                      2 * gray[y * w + (x - 1)] + 2 * gray[y * w + (x + 1)] -
+                      gray[(y + 1) * w + (x - 1)] + gray[(y + 1) * w + (x + 1)];
+          const gy = -gray[(y - 1) * w + (x - 1)] - 2 * gray[(y - 1) * w + x] - gray[(y - 1) * w + (x + 1)] +
+                      gray[(y + 1) * w + (x - 1)] + 2 * gray[(y + 1) * w + x] + gray[(y + 1) * w + (x + 1)];
           edges[y * w + x] = Math.min(255, Math.sqrt(gx * gx + gy * gy));
         }
       }
 
       let minX = w, minY = h, maxX = 0, maxY = 0;
       let found = false;
-      const threshold = 55;
-
       for (let i = 0; i < edges.length; i++) {
-        if (edges[i] > threshold) {
-          const x = i % w;
-          const y = Math.floor(i / w);
+        if (edges[i] > 55) {
+          const x = i % w, y = Math.floor(i / w);
           if (x < minX) minX = x;
           if (y < minY) minY = y;
           if (x > maxX) maxX = x;
@@ -236,27 +236,26 @@ function runAutoEdgeDetection() {
 
       if (!found || maxX <= minX || maxY <= minY) return;
 
-      const padding = 12;
-      minX = Math.max(0, minX - padding);
-      minY = Math.max(0, minY - padding);
-      maxX = Math.min(w, maxX + padding);
-      maxY = Math.min(h, maxY + padding);
+      const pad = 12;
+      minX = Math.max(0, minX - pad);
+      minY = Math.max(0, minY - pad);
+      maxX = Math.min(w, maxX + pad);
+      maxY = Math.min(h, maxY + pad);
 
-      const scaleX = tmpImg.width / w;
-      const scaleY = tmpImg.height / h;
+      const sx = tmpImg.width / w;
+      const sy = tmpImg.height / h;
 
       if (cropper) {
         cropper.setData({
-          x: minX * scaleX,
-          y: minY * scaleY,
-          width: (maxX - minX) * scaleX,
-          height: (maxY - minY) * scaleY
+          x: minX * sx,
+          y: minY * sy,
+          width: (maxX - minX) * sx,
+          height: (maxY - minY) * sy
         });
-        status.textContent = 'Auto-edge applied. You can adjust the crop box.';
       }
     };
     tmpImg.src = imgData;
   } catch (e) {
-    console.warn('Auto edge failed:', e);
+    console.warn(e);
   }
 }
