@@ -1,26 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- AdSense & Ads -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script>(function(s){s.dataset.zone='11817405',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Metal Prices | Gold & Silver - pdfscaner.in</title>
+  <title>Live Gold, Silver & Precious Metal Rates India (INR) - pdfscaner.in</title>
+  <meta name="description" content="Check live 24K Gold, Silver, Platinum and Palladium prices in India (INR) & USD. Real-time precious metal rate tracker per gram and per ounce.">
+  <link rel="canonical" href="https://pdfscaner.in/metals.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 15px; }
-    header { text-align: center; margin-bottom: 20px; }
-    nav a { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin: 2px; border-radius: 20px; text-decoration: none; color: #333; font-weight: bold; }
-    nav a.active { background: #007bff; color: white; }
-    .card { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .price-card { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #007bff; }
-    .price-card h3 { margin-bottom: 6px; color: #333; }
-    .price-card .usd { font-size: 18px; font-weight: bold; color: #28a745; }
-    .price-card .inr { font-size: 15px; color: #555; margin-top: 4px; }
-    button { padding: 10px 16px; border: none; border-radius: 6px; background: #17a2b8; color: white; cursor: pointer; font-weight: bold; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 65%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+    }
+    header { text-align: center; margin-bottom: 28px; }
+    .brand-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+    }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 24px; }
+    nav a {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+    nav a:hover { color: #fff; border-color: rgba(96, 165, 250, 0.5); background: rgba(59, 130, 246, 0.1); }
+    nav a.active {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+    .price-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-left: 5px solid var(--primary);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .price-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.18); }
+    .price-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+    .price-card .usd { font-size: 20px; font-weight: 700; color: var(--success); font-family: 'JetBrains Mono', monospace; }
+    .price-card .inr { font-size: 14px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    .refresh-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: filter 0.2s;
+    }
+    .refresh-btn:hover { filter: brightness(1.1); }
+    
+    /* SEO & FAQ styling */
+    .seo-content { margin-top: 35px; border-top: 1px solid var(--card-border); padding-top: 25px; line-height: 1.7; }
+    .seo-content h2 { font-size: 20px; color: #60a5fa; margin-bottom: 12px; }
+    .seo-content p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
+    .faq-item { background: rgba(0, 0, 0, 0.25); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+    .faq-item h4 { font-size: 15px; color: #f1f5f9; margin-bottom: 6px; }
+    .faq-item p { font-size: 13.5px; color: var(--text-muted); margin-bottom: 0; }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Live Metal Prices</h1>
+    <div class="brand-title">LIVE PRECIOUS METALS</div>
     <nav>
       <a href="index.html">Scanner</a>
       <a href="metals.html" class="active">Metal Prices</a>
@@ -31,30 +124,51 @@
     </nav>
   </header>
 
-  <div class="card">
-    <div id="metalPrices"><p style="text-align:center;color:#888;">Loading live prices...</p></div>
-    <div style="text-align:center; margin-top:15px;">
-      <button onclick="loadMetalPrices()">🔄 Refresh Live Prices</button>
-    </div>
-  </div>
+  <main class="container">
+    <div id="metalPrices"><p style="text-align:center;color:var(--text-muted);">Fetching real-time spot rates...</p></div>
+    <button class="refresh-btn" onclick="loadMetalPrices()">🔄 Refresh Live Prices</button>
+
+    <section class="seo-content">
+      <h2>Live Gold & Silver Price Tracking in India</h2>
+      <p>Stay ahead with real-time precious metals intelligence on <strong>pdfscaner.in</strong>. Our real-time financial tracking engine recalculates international spot rates (XAU, XAG, XPT, XPD) directly against the live Indian Rupee (INR) exchange rate. We provide accurate prices per troy ounce and standardized per gram pricing for pure 24 Karat gold and 999 fine silver.</p>
+      
+      <h2 style="margin-top: 25px;">Frequently Asked Questions (FAQ)</h2>
+      
+      <div class="faq-item">
+        <h4>How frequently are the metal prices updated?</h4>
+        <p>Our feed connects to decentralized market rate feeds that update continuously throughout international trading hours. Click the "Refresh Live Prices" button anytime for instant spot sync.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Are local Indian taxes (GST / Making Charges) included?</h4>
+        <p>The rates displayed show the pure international spot price calculated in INR. Jeweler making charges, import duties, and 3% GST applicable in India are not included in baseline bullion spot figures.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What is the difference between an Ounce and a Gram?</h4>
+        <p>In precious metals, weight is measured in Troy Ounces. 1 Troy Ounce equals precisely 31.1035 grams (distinct from a standard food ounce of 28.3495 grams).</p>
+      </div>
+    </section>
+  </main>
 
   <script>
     async function loadMetalPrices() {
       const container = document.getElementById('metalPrices');
-      container.innerHTML = '<p style="text-align:center;color:#888;">Loading live prices...</p>';
+      container.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Fetching real-time spot rates...</p>';
       try {
         const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
         const data = await res.json();
         const rates = data.usd;
+        const inrRate = rates.inr;
         const metals = [
-          { name: '🥇 Gold (24K)', usd: 1 / rates.xau, color: '#FFD700' },
-          { name: '🥈 Silver', usd: 1 / rates.xag, color: '#C0C0C0' },
-          { name: 'Platinum', usd: 1 / rates.xpt, color: '#E5E4E2' },
-          { name: 'Palladium', usd: 1 / rates.xpd, color: '#CED0DD' }
+          { name: '🥇 Gold (24K)', usd: 1 / rates.xau, color: '#f59e0b' },
+          { name: '🥈 Silver', usd: 1 / rates.xag, color: '#94a3b8' },
+          { name: '⚪ Platinum', usd: 1 / rates.xpt, color: '#06b6d4' },
+          { name: '🔘 Palladium', usd: 1 / rates.xpd, color: '#a855f7' }
         ];
         let html = '';
         metals.forEach(m => {
-          const inrOz = m.usd * rates.inr;
+          const inrOz = m.usd * inrRate;
           const inrGram = inrOz / 31.1035;
           html += `
             <div class="price-card" style="border-left-color:${m.color}">
@@ -63,9 +177,10 @@
               <div class="inr">₹${inrOz.toLocaleString('en-IN', {maximumFractionDigits:0})} / oz &nbsp;•&nbsp; ₹${inrGram.toLocaleString('en-IN', {maximumFractionDigits:0})} / gram</div>
             </div>`;
         });
-        container.innerHTML = html + `<p style="text-align:center;font-size:12px;color:#999;margin-top:10px;">Updated: ${data.date}</p>`;
+        html += `<p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px;font-family:'JetBrains Mono',monospace;">Last Feed Sync: ${data.date}</p>`;
+        container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:#dc3545;">Failed to load live prices.</p>`;
+        container.innerHTML = `<p style="text-align:center;color:#ef4444;">Failed to sync market rates.</p>`;
       }
     }
     loadMetalPrices();
