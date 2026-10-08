@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Currency Converter - pdfscaner.in</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 15px; }
+    header { text-align: center; margin-bottom: 20px; }
+    nav a { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin: 2px; border-radius: 20px; text-decoration: none; color: #333; font-weight: bold; }
+    nav a.active { background: #007bff; color: white; }
+    .card { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .currency-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 15px 0; align-items: center; }
+    select, input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+    .currency-list { max-height: 380px; overflow-y: auto; margin-top: 15px; border: 1px solid #eee; border-radius: 8px; }
+    .currency-item { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #f0f0f0; }
+    button { padding: 9px 18px; border: none; border-radius: 6px; background: #007bff; color: white; cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>World Currency Converter</h1>
+    <nav>
+      <a href="index.html">Scanner</a>
+      <a href="metals.html">Metal Prices</a>
+      <a href="currency.html" class="active">Currency</a>
+      <a href="about.html">About Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+  </header>
 
+  <div class="card">
+    <div class="currency-row">
+      <input type="number" id="amount" value="1" min="0" step="any" style="width:100px;">
+      <select id="fromCurrency"></select>
+      <span>→</span>
+      <select id="toCurrency"></select>
+    </div>
+    <div style="text-align:center;"><button onclick="convertCurrency()">Convert</button></div>
+    <div id="convertResult" style="text-align:center;font-size:20px;font-weight:bold;color:#28a745;margin:15px 0;min-height:25px;"></div>
+    <h3 style="text-align:center;">Live Rates (1 unit = ? INR)</h3>
+    <div class="currency-list" id="currencyList"></div>
+  </div>
+
+  <script>
+    const currencyData = [
+      { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
+      { code: 'USD', name: 'US Dollar', symbol: '$' },
+      { code: 'EUR', name: 'Euro', symbol: '€' },
+      { code: 'GBP', name: 'British Pound', symbol: '£' },
+      { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ' },
+      { code: 'SAR', name: 'Saudi Riyal', symbol: '﷼' },
+      { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' }
+    ];
+    let ratesCache = null;
+
+    async function initCurrency() {
+      const fromSelect = document.getElementById('fromCurrency');
+      const toSelect = document.getElementById('toCurrency');
+      currencyData.forEach(c => {
+        fromSelect.add(new Option(`${c.symbol} ${c.code} - ${c.name}`, c.code));
+        toSelect.add(new Option(`${c.symbol} ${c.code} - ${c.name}`, c.code));
+      });
+      fromSelect.value = 'USD'; toSelect.value = 'INR';
+
+      const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+      const data = await res.json();
+      ratesCache = data.usd;
+      let listHtml = '';
+      currencyData.forEach(c => {
+        let val = c.code === 'INR' ? 1 : (c.code === 'USD' ? ratesCache.inr : (ratesCache.inr / ratesCache[c.code.toLowerCase()]));
+        listHtml += `<div class="currency-item"><span><strong>${c.code}</strong> (${c.name})</span><span>₹${val.toFixed(2)}</span></div>`;
+      });
+      document.getElementById('currencyList').innerHTML = listHtml;
+    }
+
+    function convertCurrency() {
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const from = document.getElementById('fromCurrency').value.toLowerCase();
+      const to = document.getElementById('toCurrency').value.toLowerCase();
+      const fromRate = from === 'usd' ? 1 : ratesCache[from];
+      const toRate = to === 'usd' ? 1 : ratesCache[to];
+      const finalAmount = (amount / fromRate) * toRate;
+      document.getElementById('convertResult').textContent = `${amount} ${from.toUpperCase()} = ${finalAmount.toFixed(2)} ${to.toUpperCase()}`;
+    }
+    initCurrency();
+  </script>
+</body>
+</html>
