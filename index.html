@@ -1,65 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- AdSense & Ads -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-  <script>(function(s){s.dataset.zone='11817405',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Free Online PDF Scanner - pdfscaner.in</title>
-  <meta name="description" content="Free online PDF scanner to scan documents from camera and create multi-page A4 PDF directly in your browser. 100% private.">
+  <title>NextGen PDF Scanner & Tools - pdfscaner.in</title>
+  <meta name="description" content="NextGen browser-based AI document scanner, live metals index, and global FX rates. 100% private.">
   <link rel="canonical" href="https://pdfscaner.in/">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f0f2f5; padding: 15px; }
-    header { text-align: center; margin-bottom: 20px; }
-    h1 { color: #1a73e8; margin-bottom: 12px; }
-    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-    nav a {
-      background: #ffffff; border: 1px solid #dadce0; padding: 8px 16px;
-      border-radius: 20px; text-decoration: none; font-weight: 600; color: #3c4043; font-size: 14px;
-      transition: all 0.2s;
-    }
-    nav a:hover { background: #e8f0fe; color: #1a73e8; border-color: #1a73e8; }
-    nav a.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
-    .card { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-    #video, #preview { width: 100%; max-width: 500px; display: block; margin: 0 auto 15px; background: #000; min-height: 220px; border-radius: 8px; }
-    .buttons { text-align: center; margin: 15px 0; }
-    button.action-btn {
-      padding: 10px 18px; margin: 5px; font-size: 15px; font-weight: 600; border: none;
-      border-radius: 6px; cursor: pointer; background: #1a73e8; color: white;
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --accent: #06b6d4;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
     }
-    button.action-btn:disabled { background: #ccc; cursor: not-allowed; }
-    #createPdf { background: #28a745; }
-    #resetBtn { background: #dc3545; }
-    #cameraToggle { background: #6c757d; }
-    #cropArea { max-width: 500px; margin: 0 auto; display: none; }
-    #status { text-align: center; margin-top: 10px; color: #555; font-size: 14px; min-height: 22px; }
-    .page-info { text-align: center; margin: 10px 0; font-weight: bold; color: #333; }
-    .settings-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0; align-items: center; }
-    .settings-row input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; width: 180px; }
-    .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 65%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #60a5fa, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    nav a {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+
+    nav a:hover {
+      color: #fff;
+      border-color: rgba(96, 165, 250, 0.5);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    nav a.active {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+
+    .scanner-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+
+    .viewport-frame {
+      position: relative;
+      width: 100%;
+      min-height: 280px;
+      background: #030712;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    #video, #preview {
+      width: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    #cropArea {
+      display: none;
+      width: 100%;
+    }
+
+    .badge-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 14px auto 8px;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button.btn {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      color: white;
+    }
+
+    button.btn:active { transform: scale(0.98); }
+    button.btn:disabled {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: rgba(255, 255, 255, 0.04) !important;
+      color: rgba(255, 255, 255, 0.25) !important;
+      cursor: not-allowed;
+      box-shadow: none !important;
+    }
+
+    .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 4px 14px var(--primary-glow); }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.12); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.08); border-color: var(--card-border); color: #cbd5e1; }
+    .btn-secondary:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .btn-success { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+    .btn-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
+    .btn-danger:hover:not(:disabled) { background: #ef4444; color: #fff; }
+
+    .scanner-settings {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 15px 0;
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--primary); }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 24px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-    input:checked + .slider { background-color: #28a745; }
-    input:checked + .slider:before { transform: translateX(22px); }
-    .page-thumb-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 500px; margin: 10px auto; }
-    .page-thumb-box { position: relative; display: inline-block; }
-    .page-thumb { width: 55px; height: 70px; border: 2px solid #ddd; border-radius: 4px; object-fit: cover; }
-    .page-thumb-overlay {
-      position: absolute; top: -6px; right: -6px; background: #dc3545; color: white;
-      border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center;
-      justify-content: center; font-size: 12px; cursor: pointer; font-weight: bold;
+    .slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .25s; border-radius: 9999px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px;
+      left: 3px; bottom: 3px; background-color: #fff;
+      transition: .25s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .page-thumb-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin: 12px 0;
+    }
+    .thumb-card {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #000;
+    }
+    .thumb-card img {
+      width: 58px;
+      height: 74px;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(239, 68, 68, 0.85);
+      color: #fff;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    #status {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>PDF Scanner</h1>
+    <div class="brand-title">PDF SCANNER</div>
     <nav>
       <a href="index.html" class="active">Scanner</a>
       <a href="metals.html">Metal Prices</a>
@@ -70,36 +272,47 @@
     </nav>
   </header>
 
-  <div class="card">
-    <video id="video" autoplay playsinline></video>
-    <div id="cropArea">
-      <img id="preview" alt="Captured page">
+  <main class="scanner-shell">
+    <div class="viewport-frame">
+      <video id="video" autoplay playsinline></video>
+      <div id="cropArea">
+        <img id="preview" alt="Document Crop">
+      </div>
     </div>
-    <div class="page-info" id="pageCountText">Pages Captured: 0</div>
+
+    <div style="text-align: center;">
+      <div class="badge-counter" id="pageCountText">Pages Scanned: 0</div>
+    </div>
+
     <div class="page-thumb-row" id="pageThumbs"></div>
-    <div class="settings-row">
-      <label for="filenameInput">PDF File Name:</label>
-      <input type="text" id="filenameInput" placeholder="My Scanned PDF" value="Scanned-Document">
-      <label for="autoEdgeToggle">Auto Edge:</label>
-      <label class="switch">
-        <input type="checkbox" id="autoEdgeToggle" checked>
-        <span class="slider"></span>
-      </label>
+
+    <div class="scanner-settings">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="filenameInput" style="font-size: 13px; color: var(--text-muted);">Name:</label>
+        <input type="text" id="filenameInput" class="input-field" value="Scanned-Doc" placeholder="File Name">
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 13px; color: var(--text-muted);">Smart Crop:</span>
+        <label class="switch">
+          <input type="checkbox" id="autoEdgeToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
-    <div class="buttons">
-      <button class="action-btn" id="captureBtn">Capture Page</button>
-      <button class="action-btn" id="nextBtn" disabled>Next Page</button>
-      <button class="action-btn" id="createPdf" disabled>Create PDF</button>
-      <button class="action-btn" id="resetBtn" disabled>Reset All</button>
-      <br>
-      <button class="action-btn" id="cameraToggle">🔄 Flip Camera</button>
+
+    <div class="controls-grid">
+      <button class="btn btn-primary" id="captureBtn">📸 Capture</button>
+      <button class="btn btn-secondary" id="nextBtn" disabled>➕ Next Page</button>
+      <button class="btn btn-success" id="createPdf" disabled>⚡ Export PDF</button>
+      <button class="btn btn-danger" id="resetBtn" disabled>🗑 Reset</button>
+      <button class="btn btn-secondary" id="cameraToggle">🔄 Flip Cam</button>
     </div>
-    <p id="status">Camera is ready. Hold the device steady, fit document in frame, and press Capture Page.</p>
-  </div>
+
+    <p id="status">Ready. Align your document and tap Capture.</p>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- Alag JavaScript File link kari -->
   <script src="app.js"></script>
 </body>
 </html>
