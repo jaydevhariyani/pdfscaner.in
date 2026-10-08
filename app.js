@@ -63,14 +63,14 @@ async function startCamera() {
       }
     });
     video.srcObject = stream;
-    status.textContent = 'કેમેરા તૈયાર છે. મોબાઈલને સીધો રાખીને ડોક્યુમેન્ટને ફ્રેમમાં ભરો અને Capture Page દબાવો.';
+    status.textContent = 'Camera is ready. Hold steady, fit document in frame, and press Capture Page.';
   } catch (err) {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: currentFacing, width: { ideal: 1920 }, height: { ideal: 1440 } }
       });
       video.srcObject = stream;
-      status.textContent = 'કેમેરા તૈયાર છે (સામાન્ય ક્વોલિટી). Capture Page દબાવો.';
+      status.textContent = 'Camera is ready (standard quality). Press Capture Page.';
     } catch (e2) {
       status.textContent = 'Camera permission error: ' + e2.message;
     }
@@ -113,7 +113,7 @@ captureBtn.onclick = () => {
   captureBtn.disabled = true;
   createPdfBtn.disabled = false;
   nextBtn.disabled = false;
-  status.textContent = 'A4 સાઈઝ મુજબ ક્રોપ કરો. પછી Next Page અથવા Create PDF દબાવો.';
+  status.textContent = 'Crop according to A4 size. Then press Next Page or Create PDF.';
 };
 
 nextBtn.onclick = () => {
@@ -125,7 +125,7 @@ nextBtn.onclick = () => {
   video.style.display = 'block';
   captureBtn.disabled = false;
   nextBtn.disabled = true;
-  status.textContent = 'આગળનું પેજ સ્કેન કરો... Capture Page દબાવો.';
+  status.textContent = 'Scan next page... Press Capture Page.';
   startCamera();
 };
 
@@ -252,7 +252,7 @@ function runAutoEdgeDetection() {
           width: (maxX - minX) * scaleX,
           height: (maxY - minY) * scaleY
         });
-        status.textContent = 'Auto-edge applied. A4 ratio મુજબ adjust કરી શકો છો.';
+        status.textContent = 'Auto-edge applied. You can adjust the crop box.';
       }
     };
     tmpImg.src = imgData;
