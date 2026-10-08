@@ -3,21 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us - pdfscaner.in</title>
+  <title>About pdfscaner.in | Online Document Utilities</title>
+  <meta name="description" content="Discover pdfscaner.in — private browser-based scanning suite developed by Jaydevbhai Hariyani from Surat, Gujarat.">
+  <link rel="canonical" href="https://pdfscaner.in/about.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 15px; }
-    header { text-align: center; margin-bottom: 20px; }
-    nav a { background: #fff; border: 1px solid #ccc; padding: 8px 15px; margin: 2px; border-radius: 20px; text-decoration: none; color: #333; font-weight: bold; }
-    nav a.active { background: #007bff; color: white; }
-    .card { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    h2 { margin-bottom: 15px; color: #333; }
-    p { line-height: 1.6; color: #555; margin-bottom: 12px; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% 0%, #172554 0%, var(--bg) 65%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 14px 40px;
+    }
+    header { text-align: center; margin-bottom: 28px; }
+    .brand-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #60a5fa, #a855f7, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+    }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 24px; }
+    nav a {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+    nav a:hover { color: #fff; border-color: rgba(96, 165, 250, 0.5); background: rgba(59, 130, 246, 0.1); }
+    nav a.active {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      line-height: 1.8;
+    }
+    h2 { font-size: 22px; color: #60a5fa; margin-bottom: 16px; }
+    p { font-size: 14.5px; color: var(--text-muted); margin-bottom: 16px; }
+    .feature-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .feature-pill strong { color: #fff; display: block; margin-bottom: 4px; }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>About Us</h1>
+    <div class="brand-title">ABOUT US</div>
     <nav>
       <a href="index.html">Scanner</a>
       <a href="metals.html">Metal Prices</a>
@@ -27,10 +93,28 @@
       <a href="contact.html">Contact Us</a>
     </nav>
   </header>
-  <div class="card">
-    <h2>About pdfscaner.in</h2>
-    <p>Welcome to <strong>pdfscaner.in</strong>, your fast, secure, and browser-based document scanning utility managed by <strong>Jaydevbhai Hariyani</strong> from <strong>Surat, Gujarat</strong>.</p>
-    <p>We built this tool to help users quickly capture multi-page physical documents, crop unnecessary edges, and convert them cleanly into standard A4 PDF files directly from their mobile or desktop browser without installing heavy apps.</p>
-  </div>
+
+  <main class="container">
+    <h2>Mission & Vision</h2>
+    <p><strong>pdfscaner.in</strong> is an independent web utility built to deliver desktop-grade document processing and financial market feeds directly into the modern web browser. Founded and operated by <strong>Jaydevbhai Hariyani</strong> in <strong>Surat, Gujarat, India</strong>, the platform eliminates the need to download bloated smartphone apps filled with intrusive tracking and paywalls.</p>
+
+    <h2>Why Choose Our Tools?</h2>
+    
+    <div class="feature-pill">
+      <strong>🔒 Zero-Knowledge Local Architecture</strong>
+      All camera captures, document crops, and PDF compilation routines run entirely inside your browser memory using WebAssembly and HTML5 Canvas. Your documents are never uploaded to any cloud server.
+    </div>
+
+    <div class="feature-pill">
+      <strong>⚡ Instant Cross-Platform Utility</strong>
+      Fully optimized for Android Chrome, iOS Safari, and desktop browsers without requiring app store downloads or logins.
+    </div>
+
+    <div class="feature-pill">
+      <strong>📈 Real-Time Market Integrations</strong>
+      Direct spot rate intelligence for gold, silver, and world currencies updated live for Indian traders, importers, and international merchants.
+    </div>
+  </main>
+
 </body>
 </html>
